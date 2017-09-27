@@ -23,7 +23,7 @@ end
 
 macro where_internal(source, f)
     q = Expr(:quote, f)
-    :(where($(esc(source)), $(esc(f)), $(esc(q))))
+    :(QueryOperators.where($(esc(source)), $(esc(f)), $(esc(q))))
 end
 
 function Base.start{T,S,Q}(iter::EnumerableWhere{T,S,Q})

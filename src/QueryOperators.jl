@@ -3,6 +3,7 @@ module QueryOperators
 using DataStructures
 using DataValues
 using NamedTuples
+using TableTraits
 
 export Grouping
 
@@ -20,5 +21,8 @@ include("enumerable/enumerable_count.jl")
 include("queryable/queryable.jl")
 include("queryable/queryable_select.jl")
 include("queryable/queryable_where.jl")
+
+include("source_iterable.jl")
+include("sink_array.jl")
 
 end # module
