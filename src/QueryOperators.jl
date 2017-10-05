@@ -1,7 +1,7 @@
 module QueryOperators
 
 using DataStructures
-using DataValues
+using Nulls
 using NamedTuples
 using TableTraits
 

@@ -30,7 +30,7 @@ function Base.start{T,S,Q}(iter::EnumerableWhere{T,S,Q})
     s = start(iter.source)
     while !done(iter.source, s)
         v,t = next(iter.source, s)
-        if iter.filter(v)
+        if Nulls.coalesce(iter.filter(v), false)
             return EnumerableWhereState(false, Nullable(v), t)
         end
         s = t
@@ -47,7 +47,7 @@ function Base.next{T,S,Q}(iter::EnumerableWhere{T,S,Q}, state)
         temp = next(iter.source,s)
         w = temp[1]
         t = temp[2]
-        if iter.filter(w)::Bool
+        if Nulls.coalesce(iter.filter(w), false)::Bool
             temp2 = Nullable(w)
             new_state = EnumerableWhereState(false, temp2, t)
             return v, new_state

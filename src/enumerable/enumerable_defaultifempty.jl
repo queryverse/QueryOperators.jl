@@ -1,4 +1,4 @@
-immutable EnumerableDefaultIfEmpty{T,S} <: Enumerable
+struct EnumerableDefaultIfEmpty{T,S} <: Enumerable
     source::S
     default_value::T
 end
@@ -10,25 +10,24 @@ Base.eltype{T,S}(iter::Type{EnumerableDefaultIfEmpty{T,S}}) = T
 function default_if_empty{S}(source::S)
     T = eltype(source)
 
-    if T<:NamedTuple
-        if !all(i->i<:DataValue,T.parameters)
-            error("default_if_empty requires a default value if the source element is a NamedTuple and at least one of its fields is not a DataValue.")
+    if T <: NamedTuple
+        if !all(i->i >: Null, T.parameters)
+            error("default_if_empty requires a default value if the source element is a NamedTuple and at least one of its fields can't be `null`.")
         end
-        default_value = T([i() for i in T.parameters]...)
+        default_value = T([null for i in T.parameters]...)
     else
-        if !(T<:DataValue)
-            error("default_if_empty requires a default value if the source element is not a DataValue.")
+        if !(T >: Null)
+            error("default_if_empty requires a default value if the source element can't be `null`.")
         end
-        default_value = T()
+        default_value = null
     end
 
     return EnumerableDefaultIfEmpty{T,S}(source, default_value)
 end
 
-
 function default_if_empty{S,TD}(source::S, default_value::TD)
     T = eltype(source)
-    if T!=TD
+    if T != TD
         error("The default value must have the same type as the elements from the source.")
     end
     return EnumerableDefaultIfEmpty{T,S}(source, default_value)
