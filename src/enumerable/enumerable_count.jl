@@ -3,7 +3,7 @@ function _count(source::Enumerable, filter::Function, state)
     while !done(source, state)
         ret_val = next(source, state)
         state = ret_val[2]
-        if filter(ret_val[1])
+        if Nulls.coalesce(filter(ret_val[1]), false)
             count_val += 1
         end
     end
@@ -38,4 +38,13 @@ end
 
 macro count_internal(source)
     :(count($(esc(source))))
+end
+
+macro count(source, f)
+    q = Expr(:quote, f)
+    :(count(Query.query($(esc(source))), $(esc(f)), $(esc(q))))
+end
+
+macro count(source)
+    :(count(Query.query($(esc(source)))))
 end
