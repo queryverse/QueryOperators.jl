@@ -1,12 +1,8 @@
-immutable EnumerableSelectMany{T,SO,CS<:Function,RS<:Function} <: Enumerable
+immutable EnumerableSelectMany{T,SO,CS<:Function,RS<:Function} <: Enumerable{T}
     source::SO
     collectionSelector::CS
     resultSelector::RS
 end
-
-Base.eltype{T,SO,CS,RS}(iter::EnumerableSelectMany{T,SO,CS,RS}) = T
-
-Base.eltype{T,SO,CS,RS}(iter::Type{EnumerableSelectMany{T,SO,CS,RS}}) = T
 
 # TODO Make sure this is actually correct. We might have to be more selective,
 # i.e. only scan arguments for certain types of expression etc.
