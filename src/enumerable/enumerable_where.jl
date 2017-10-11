@@ -1,5 +1,5 @@
 # T is the type of the elements produced by this iterator
-immutable EnumerableWhere{T,S,Q<:Function} <: Enumerable{T}
+immutable EnumerableWhere{T,S,Q<:Function} <: SimpleSourceEnumerable{T, S}
     source::S
     filter::Q
 end

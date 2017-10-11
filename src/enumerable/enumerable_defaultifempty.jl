@@ -1,4 +1,4 @@
-immutable EnumerableDefaultIfEmpty{T,S} <: Enumerable{T}
+immutable EnumerableDefaultIfEmpty{T,S} <: SimpleSourceEnumerable{T,S}
     source::S
     default_value::T
 end

@@ -1,4 +1,4 @@
-immutable EnumerableOrderby{T,S,KS<:Function,TKS} <: Enumerable{T}
+immutable EnumerableOrderby{T,S,KS<:Function,TKS} <: SimpleSourceEnumerable{T,S}
     source::S
     keySelector::KS
     descending::Bool
@@ -54,7 +54,7 @@ end
 
 Base.done{T,S,KS,TKS}(f::EnumerableOrderby{T,S,KS,TKS}, state) = state[2] > length(state[1])
 
-immutable EnumerableThenBy{T,S,KS<:Function,TKS} <: Enumerable{T}
+immutable EnumerableThenBy{T,S,KS<:Function,TKS} <: SimpleSourceEnumerable{T,S}
     source::S
     keySelector::KS
     descending::Bool

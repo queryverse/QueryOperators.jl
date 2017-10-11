@@ -1,4 +1,4 @@
-immutable EnumerableIterable{T,S} <: Enumerable{T}
+immutable EnumerableIterable{T,S} <: SimpleSourceEnumerable{T,S}
     source::S
 end
 
