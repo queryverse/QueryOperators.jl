@@ -1,12 +1,8 @@
 # T is the type of the elements produced by this iterator
-immutable EnumerableWhere{T,S,Q<:Function} <: Enumerable
+immutable EnumerableWhere{T,S,Q<:Function} <: SimpleSourceEnumerable{T, S}
     source::S
     filter::Q
 end
-
-Base.eltype{T,S,Q}(iter::EnumerableWhere{T,S,Q}) = T
-
-Base.eltype{T,S,Q}(iter::Type{EnumerableWhere{T,S,Q}}) = T
 
 immutable EnumerableWhereState{T,S}
     done::Bool

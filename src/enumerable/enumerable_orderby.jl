@@ -1,14 +1,10 @@
-immutable EnumerableOrderby{T,S,KS<:Function,TKS} <: Enumerable
+immutable EnumerableOrderby{T,S,KS<:Function,TKS} <: SimpleSourceEnumerable{T,S}
     source::S
     keySelector::KS
     descending::Bool
 end
 
 Base.iteratorsize{T,S,KS,TKS}(::Type{EnumerableOrderby{T,S,KS,TKS}}) = Base.iteratorsize(S)
-
-Base.eltype{T,S,KS,TKS}(iter::EnumerableOrderby{T,S,KS,TKS}) = T
-
-Base.eltype{T,S,KS,TKS}(iter::Type{EnumerableOrderby{T,S,KS,TKS}}) = T
 
 Base.length{T,S,KS,TKS}(iter::EnumerableOrderby{T,S,KS,TKS}) = length(iter.source)
 
@@ -58,15 +54,11 @@ end
 
 Base.done{T,S,KS,TKS}(f::EnumerableOrderby{T,S,KS,TKS}, state) = state[2] > length(state[1])
 
-immutable EnumerableThenBy{T,S,KS<:Function,TKS} <: Enumerable
+immutable EnumerableThenBy{T,S,KS<:Function,TKS} <: SimpleSourceEnumerable{T,S}
     source::S
     keySelector::KS
     descending::Bool
 end
-
-Base.eltype{T,S,KS,TKS}(iter::EnumerableThenBy{T,S,KS,TKS}) = T
-
-Base.eltype{T,S,KS,TKS}(iter::Type{EnumerableThenBy{T,S,KS,TKS}}) = T
 
 Base.length{T,S,KS,TKS}(iter::EnumerableThenBy{T,S,KS,TKS}) = length(iter.source)
 

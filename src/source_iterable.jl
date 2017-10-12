@@ -1,4 +1,4 @@
-immutable EnumerableIterable{T,S} <: Enumerable
+immutable EnumerableIterable{T,S} <: SimpleSourceEnumerable{T,S}
     source::S
 end
 
@@ -14,10 +14,6 @@ function query(source)
 end
 
 Base.iteratorsize{T,S}(::Type{EnumerableIterable{T,S}}) = Base.iteratorsize(S)
-
-Base.eltype{T,S}(iter::EnumerableIterable{T,S}) = T
-
-Base.eltype{T,S}(iter::Type{EnumerableIterable{T,S}}) = T
 
 Base.length{T,S}(iter::EnumerableIterable{T,S}) = length(iter.source)
 
