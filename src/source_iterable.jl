@@ -3,8 +3,8 @@ immutable EnumerableIterable{T,S} <: Enumerable
 end
 
 function query(source)
-    TableTraits.isiterable(source) || error()
-    typed_source = TableTraits.getiterator(source)
+    IteratorInterfaceExtensions.isiterable(source) || error()
+    typed_source = IteratorInterfaceExtensions.getiterator(source)
 	T = eltype(typed_source)
     S = typeof(typed_source)
 

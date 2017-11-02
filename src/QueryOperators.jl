@@ -3,7 +3,7 @@ module QueryOperators
 using DataStructures
 using DataValues
 using NamedTuples
-using TableTraits
+using IteratorInterfaceExtensions
 
 export Grouping
 
