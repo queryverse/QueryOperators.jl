@@ -1,14 +1,14 @@
 # T is the type of the elements produced by this iterator
-immutable EnumerableWhere{T,S,Q<:Function} <: Enumerable
+struct EnumerableWhere{T,S,Q<:Function} <: Enumerable
     source::S
     filter::Q
 end
 
-Base.eltype{T,S,Q}(iter::EnumerableWhere{T,S,Q}) = T
+Base.eltype(iter::EnumerableWhere{T,S,Q}) where {T,S,Q} = T
 
-Base.eltype{T,S,Q}(iter::Type{EnumerableWhere{T,S,Q}}) = T
+Base.eltype(iter::Type{EnumerableWhere{T,S,Q}}) where {T,S,Q} = T
 
-immutable EnumerableWhereState{T,S}
+struct EnumerableWhereState{T,S}
     done::Bool
     next_value::Nullable{T}
     source_state::S
@@ -26,7 +26,7 @@ macro where_internal(source, f)
     :(QueryOperators.where($(esc(source)), $(esc(f)), $(esc(q))))
 end
 
-function Base.start{T,S,Q}(iter::EnumerableWhere{T,S,Q})
+function Base.start(iter::EnumerableWhere{T,S,Q}) where {T,S,Q}
     s = start(iter.source)
     while !done(iter.source, s)
         v,t = next(iter.source, s)
@@ -40,7 +40,7 @@ function Base.start{T,S,Q}(iter::EnumerableWhere{T,S,Q})
     return EnumerableWhereState(true, Nullable{T}(), s)
 end
 
-function Base.next{T,S,Q}(iter::EnumerableWhere{T,S,Q}, state)
+function Base.next(iter::EnumerableWhere{T,S,Q}, state) where {T,S,Q}
     v = get(state.next_value)
     s = state.source_state
     while !done(iter.source,s)
@@ -59,4 +59,4 @@ function Base.next{T,S,Q}(iter::EnumerableWhere{T,S,Q}, state)
     v, EnumerableWhereState(true,Nullable{T}(), s)
 end
 
-Base.done{T,S,Q}(f::EnumerableWhere{T,S,Q}, state) = state.done
+Base.done(f::EnumerableWhere{T,S,Q}, state) where {T,S,Q} = state.done
