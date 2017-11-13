@@ -7,7 +7,7 @@ source_1 = [1,2,2,3,4]
 
 @test collect(QueryOperators.@where_internal(QueryOperators.query(source_1), i->i>2)) == [3,4]
 
-@test collect(QueryOperators.@select_internal(QueryOperators.query(source_1), i->i^2)) == [1,4,4,9,16]
+@test collect(QueryOperators.@map_internal(QueryOperators.query(source_1), i->i^2)) == [1,4,4,9,16]
 
 group_result_1 = collect(QueryOperators.@group_by_internal(QueryOperators.query(source_1), i->i, i->i^2))
 
