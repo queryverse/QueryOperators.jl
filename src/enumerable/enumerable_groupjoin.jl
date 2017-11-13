@@ -1,4 +1,4 @@
-immutable EnumerableGroupJoin{T,TKey,TI,SO,SI,OKS<:Function,IKS<:Function,RS<:Function} <: Enumerable
+struct EnumerableGroupJoin{T,TKey,TI,SO,SI,OKS<:Function,IKS<:Function,RS<:Function} <: Enumerable
     outer::SO
     inner::SI
     outerKeySelector::OKS
@@ -6,9 +6,9 @@ immutable EnumerableGroupJoin{T,TKey,TI,SO,SI,OKS<:Function,IKS<:Function,RS<:Fu
     resultSelector::RS
 end
 
-Base.eltype{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}) = T
+Base.eltype(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS} = T
 
-Base.eltype{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::Type{EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}}) = T
+Base.eltype(iter::Type{EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}}) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS} = T
 
 function group_join(outer::Enumerable, inner::Enumerable, f_outerKeySelector::Function, outerKeySelector::Expr, f_innerKeySelector::Function, innerKeySelector::Expr, f_resultSelector::Function, resultSelector::Expr)
     TO = eltype(outer)
@@ -33,7 +33,7 @@ function group_join(outer::Enumerable, inner::Enumerable, f_outerKeySelector::Fu
 end
 
 # TODO This should be changed to a lazy implementation
-function Base.start{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS})
+function Base.start(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
     results = Array{T}(0)
 
     inner_dict = OrderedDict{TKeyOuter,Array{TI,1}}()
@@ -58,13 +58,13 @@ function Base.start{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableGroupJoin{T
     return results,1
 end
 
-function Base.next{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},state)
+function Base.next(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},state) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
     results = state[1]
     curr_index = state[2]
     return results[curr_index], (results, curr_index+1)
 end
 
-function Base.done{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},state)
+function Base.done(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},state) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
     results = state[1]
     curr_index = state[2]
     return curr_index > length(results)

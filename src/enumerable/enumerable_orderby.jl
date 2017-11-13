@@ -1,16 +1,16 @@
-immutable EnumerableOrderby{T,S,KS<:Function,TKS} <: Enumerable
+struct EnumerableOrderby{T,S,KS<:Function,TKS} <: Enumerable
     source::S
     keySelector::KS
     descending::Bool
 end
 
-Base.iteratorsize{T,S,KS,TKS}(::Type{EnumerableOrderby{T,S,KS,TKS}}) = Base.iteratorsize(S)
+Base.iteratorsize(::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = Base.iteratorsize(S)
 
-Base.eltype{T,S,KS,TKS}(iter::EnumerableOrderby{T,S,KS,TKS}) = T
+Base.eltype(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS} = T
 
-Base.eltype{T,S,KS,TKS}(iter::Type{EnumerableOrderby{T,S,KS,TKS}}) = T
+Base.eltype(iter::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = T
 
-Base.length{T,S,KS,TKS}(iter::EnumerableOrderby{T,S,KS,TKS}) = length(iter.source)
+Base.length(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS} = length(iter.source)
 
 function orderby(source::Enumerable, f::Function, f_expr::Expr)
     T = eltype(source)
@@ -30,7 +30,7 @@ function orderby_descending(source::Enumerable, f::Function, f_expr::Expr)
     return EnumerableOrderby{T,typeof(source),KS,TKS}(source, f, true)
 end
 
-function Base.start{T,S,KS,TKS}(iter::EnumerableOrderby{T,S,KS,TKS})
+function Base.start(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS}
     rows = Base.iteratorsize(typeof(iter))==Base.HasLength() ? length(iter) : 0
 
     elements = Array{T}(rows)
@@ -50,25 +50,25 @@ function Base.start{T,S,KS,TKS}(iter::EnumerableOrderby{T,S,KS,TKS})
     return elements, 1
 end
 
-function Base.next{T,S,KS,TKS}(iter::EnumerableOrderby{T,S,KS,TKS}, state)
+function Base.next(iter::EnumerableOrderby{T,S,KS,TKS}, state) where {T,S,KS,TKS}
     elements = state[1]
     i = state[2]
     return elements[i], (elements, i+1)
 end
 
-Base.done{T,S,KS,TKS}(f::EnumerableOrderby{T,S,KS,TKS}, state) = state[2] > length(state[1])
+Base.done(f::EnumerableOrderby{T,S,KS,TKS}, state) where {T,S,KS,TKS} = state[2] > length(state[1])
 
-immutable EnumerableThenBy{T,S,KS<:Function,TKS} <: Enumerable
+struct EnumerableThenBy{T,S,KS<:Function,TKS} <: Enumerable
     source::S
     keySelector::KS
     descending::Bool
 end
 
-Base.eltype{T,S,KS,TKS}(iter::EnumerableThenBy{T,S,KS,TKS}) = T
+Base.eltype(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS} = T
 
-Base.eltype{T,S,KS,TKS}(iter::Type{EnumerableThenBy{T,S,KS,TKS}}) = T
+Base.eltype(iter::Type{EnumerableThenBy{T,S,KS,TKS}}) where {T,S,KS,TKS} = T
 
-Base.length{T,S,KS,TKS}(iter::EnumerableThenBy{T,S,KS,TKS}) = length(iter.source)
+Base.length(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS} = length(iter.source)
 
 function thenby(source::Enumerable, f::Function, f_expr::Expr)
     T = eltype(source)
@@ -85,7 +85,7 @@ function thenby_descending(source::Enumerable, f::Function, f_expr::Expr)
 end
 
 # TODO This should be changed to a lazy implementation
-function Base.start{T,S,KS,TKS}(iter::EnumerableThenBy{T,S,KS,TKS})
+function Base.start(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS}
     # Find start of ordering sequence
     source = iter.source
     keySelectors = [source.keySelector,iter.keySelector]
@@ -128,13 +128,13 @@ function Base.start{T,S,KS,TKS}(iter::EnumerableThenBy{T,S,KS,TKS})
     return elements, 1
 end
 
-function Base.next{T,S,KS,TKS}(iter::EnumerableThenBy{T,S,KS,TKS}, state)
+function Base.next(iter::EnumerableThenBy{T,S,KS,TKS}, state) where {T,S,KS,TKS}
     elements = state[1]
     i = state[2]
     return elements[i], (elements, i+1)
 end
 
-Base.done{T,S,KS,TKS}(f::EnumerableThenBy{T,S,KS,TKS}, state) = state[2] > length(state[1])
+Base.done(f::EnumerableThenBy{T,S,KS,TKS}, state) where {T,S,KS,TKS} = state[2] > length(state[1])
 
 macro orderby_internal(source, f)
 	q = Expr(:quote, f)

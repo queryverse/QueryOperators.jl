@@ -1,4 +1,4 @@
-immutable EnumerableJoin{T,TKey,TI,SO,SI,OKS<:Function,IKS<:Function,RS<:Function} <: Enumerable
+struct EnumerableJoin{T,TKey,TI,SO,SI,OKS<:Function,IKS<:Function,RS<:Function} <: Enumerable
     outer::SO
     inner::SI
     outerKeySelector::OKS
@@ -6,9 +6,9 @@ immutable EnumerableJoin{T,TKey,TI,SO,SI,OKS<:Function,IKS<:Function,RS<:Functio
     resultSelector::RS
 end
 
-Base.eltype{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}) = T
+Base.eltype(iter::EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS} = T
 
-Base.eltype{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::Type{EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}}) = T
+Base.eltype(iter::Type{EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}}) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS} = T
 
 function join(outer::Enumerable, inner::Enumerable, f_outerKeySelector::Function, outerKeySelector::Expr, f_innerKeySelector::Function, innerKeySelector::Expr, f_resultSelector::Function, resultSelector::Expr)
     TO = eltype(outer)
@@ -33,7 +33,7 @@ function join(outer::Enumerable, inner::Enumerable, f_outerKeySelector::Function
 end
 
 # TODO This should be changed to a lazy implementation
-function Base.start{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS})
+function Base.start(iter::EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
     results = Array{T}(0)
 
     inner_dict = OrderedDict{TKeyOuter,Array{TI,1}}()
@@ -57,13 +57,13 @@ function Base.start{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableJoin{T,TKey
     return results,1
 end
 
-function Base.next{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},state)
+function Base.next(iter::EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},state) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
     results = state[1]
     curr_index = state[2]
     return results[curr_index], (results, curr_index+1)
 end
 
-function Base.done{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(iter::EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},state)
+function Base.done(iter::EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},state) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
     results = state[1]
     curr_index = state[2]
     return curr_index > length(results)

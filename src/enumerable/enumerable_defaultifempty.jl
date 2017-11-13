@@ -1,13 +1,13 @@
-immutable EnumerableDefaultIfEmpty{T,S} <: Enumerable
+struct EnumerableDefaultIfEmpty{T,S} <: Enumerable
     source::S
     default_value::T
 end
 
-Base.eltype{T,S}(iter::EnumerableDefaultIfEmpty{T,S}) = T
+Base.eltype(iter::EnumerableDefaultIfEmpty{T,S}) where {T,S} = T
 
-Base.eltype{T,S}(iter::Type{EnumerableDefaultIfEmpty{T,S}}) = T
+Base.eltype(iter::Type{EnumerableDefaultIfEmpty{T,S}}) where {T,S} = T
 
-function default_if_empty{S}(source::S)
+function default_if_empty(source::S) where {S}
     T = eltype(source)
 
     if T<:NamedTuple
@@ -26,7 +26,7 @@ function default_if_empty{S}(source::S)
 end
 
 
-function default_if_empty{S,TD}(source::S, default_value::TD)
+function default_if_empty(source::S, default_value::TD) where {S,TD}
     T = eltype(source)
     if T!=TD
         error("The default value must have the same type as the elements from the source.")
@@ -34,12 +34,12 @@ function default_if_empty{S,TD}(source::S, default_value::TD)
     return EnumerableDefaultIfEmpty{T,S}(source, default_value)
 end
 
-function Base.start{T,S}(iter::EnumerableDefaultIfEmpty{T,S})
+function Base.start(iter::EnumerableDefaultIfEmpty{T,S}) where {T,S}
     s = start(iter.source)
     return s, done(iter.source, s) ? Nullable(true) : Nullable{Bool}()
 end
 
-function Base.next{T,S}(iter::EnumerableDefaultIfEmpty{T,S}, state)
+function Base.next(iter::EnumerableDefaultIfEmpty{T,S}, state) where {T,S}
     (s,status) = state
 
     if isnull(status)
@@ -54,7 +54,7 @@ function Base.next{T,S}(iter::EnumerableDefaultIfEmpty{T,S}, state)
     end
 end
 
-function Base.done{T,S}(iter::EnumerableDefaultIfEmpty{T,S}, state)
+function Base.done(iter::EnumerableDefaultIfEmpty{T,S}, state) where {T,S}
     (s,status) = state
     if isnull(status)
         return done(iter.source, s)

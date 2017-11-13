@@ -1,20 +1,20 @@
-immutable EnumerableGroupBySimple{T,TKey,TS,SO,ES<:Function} <: Enumerable
+struct EnumerableGroupBySimple{T,TKey,TS,SO,ES<:Function} <: Enumerable
     source::SO
     elementSelector::ES
 end
 
-immutable Grouping{TKey,T} <: AbstractArray{T,1}
+struct Grouping{TKey,T} <: AbstractArray{T,1}
     key::TKey
     elements::Array{T,1}
 end
 
-Base.size{TKey,T}(A::Grouping{TKey,T}) = size(A.elements)
-Base.getindex{TKey,T}(A::Grouping{TKey,T},i) = A.elements[i]
-Base.length{TKey,T}(A::Grouping{TKey,T}) = length(A.elements)
+Base.size(A::Grouping{TKey,T}) where {TKey,T} = size(A.elements)
+Base.getindex(A::Grouping{TKey,T},i) where {TKey,T} = A.elements[i]
+Base.length(A::Grouping{TKey,T}) where {TKey,T} = length(A.elements)
 
-Base.eltype{T,TKey,TS,SO,ES}(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}) = T
+Base.eltype(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}) where {T,TKey,TS,SO,ES} = T
 
-Base.eltype{T,TKey,TS,SO,ES}(iter::Type{EnumerableGroupBySimple{T,TKey,TS,SO,ES}}) = T
+Base.eltype(iter::Type{EnumerableGroupBySimple{T,TKey,TS,SO,ES}}) where {T,TKey,TS,SO,ES} = T
 
 function group_by(source::Enumerable, f_elementSelector::Function, elementSelector::Expr)
     TS = eltype(source)
@@ -30,7 +30,7 @@ function group_by(source::Enumerable, f_elementSelector::Function, elementSelect
 end
 
 # TODO This should be rewritten as a lazy iterator
-function Base.start{T,TKey,TS,SO,ES}(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES})
+function Base.start(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}) where {T,TKey,TS,SO,ES}
     result = OrderedDict{TKey,T}()
     for i in iter.source
         key = iter.elementSelector(i)
@@ -42,27 +42,27 @@ function Base.start{T,TKey,TS,SO,ES}(iter::EnumerableGroupBySimple{T,TKey,TS,SO,
     return collect(values(result)),1
 end
 
-function Base.next{T,TKey,TS,SO,ES}(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}, state)
+function Base.next(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}, state) where {T,TKey,TS,SO,ES}
     results = state[1]
     curr_index = state[2]
     return results[curr_index], (results, curr_index+1)
 end
 
-function Base.done{T,TKey,TS,SO,ES}(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}, state)
+function Base.done(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}, state) where {T,TKey,TS,SO,ES}
     results = state[1]
     curr_index = state[2]
     return curr_index > length(results)
 end
 
-immutable EnumerableGroupBy{T,TKey,TR,SO,ES<:Function,RS<:Function} <: Enumerable
+struct EnumerableGroupBy{T,TKey,TR,SO,ES<:Function,RS<:Function} <: Enumerable
     source::SO
     elementSelector::ES
     resultSelector::RS
 end
 
-Base.eltype{T,TKey,TR,SO,ES}(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}) = T
+Base.eltype(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}) where {T,TKey,TR,SO,ES} = T
 
-Base.eltype{T,TKey,TR,SO,ES}(iter::Type{EnumerableGroupBy{T,TKey,TR,SO,ES}}) = T
+Base.eltype(iter::Type{EnumerableGroupBy{T,TKey,TR,SO,ES}}) where {T,TKey,TR,SO,ES} = T
 
 function group_by(source::Enumerable, f_elementSelector::Function, elementSelector::Expr, f_resultSelector::Function, resultSelector::Expr)
     TS = eltype(source)
@@ -81,7 +81,7 @@ function group_by(source::Enumerable, f_elementSelector::Function, elementSelect
 end
 
 # TODO This should be rewritten as a lazy iterator
-function Base.start{T,TKey,TR,SO,ES}(iter::EnumerableGroupBy{T,TKey,TR,SO,ES})
+function Base.start(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}) where {T,TKey,TR,SO,ES}
     result = OrderedDict{TKey,T}()
     for i in iter.source
         key = iter.elementSelector(i)
@@ -93,13 +93,13 @@ function Base.start{T,TKey,TR,SO,ES}(iter::EnumerableGroupBy{T,TKey,TR,SO,ES})
     return collect(values(result)),1
 end
 
-function Base.next{T,TKey,TR,SO,ES}(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}, state)
+function Base.next(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}, state) where {T,TKey,TR,SO,ES}
     results = state[1]
     curr_index = state[2]
     return results[curr_index], (results, curr_index+1)
 end
 
-function Base.done{T,TKey,TR,SO,ES}(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}, state)
+function Base.done(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}, state) where {T,TKey,TR,SO,ES}
     results = state[1]
     curr_index = state[2]
     return curr_index > length(results)

@@ -1,3 +1,3 @@
 abstract type Enumerable end
 
-Base.iteratorsize{T<:Enumerable}(::Type{T}) = Base.SizeUnknown()
+Base.iteratorsize(::Type{T}) where {T <: Enumerable} = Base.SizeUnknown()

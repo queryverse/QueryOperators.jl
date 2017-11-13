@@ -1,12 +1,12 @@
-immutable EnumerableSelectMany{T,SO,CS<:Function,RS<:Function} <: Enumerable
+struct EnumerableSelectMany{T,SO,CS<:Function,RS<:Function} <: Enumerable
     source::SO
     collectionSelector::CS
     resultSelector::RS
 end
 
-Base.eltype{T,SO,CS,RS}(iter::EnumerableSelectMany{T,SO,CS,RS}) = T
+Base.eltype(iter::EnumerableSelectMany{T,SO,CS,RS}) where {T,SO,CS,RS} = T
 
-Base.eltype{T,SO,CS,RS}(iter::Type{EnumerableSelectMany{T,SO,CS,RS}}) = T
+Base.eltype(iter::Type{EnumerableSelectMany{T,SO,CS,RS}}) where {T,SO,CS,RS} = T
 
 # TODO Make sure this is actually correct. We might have to be more selective,
 # i.e. only scan arguments for certain types of expression etc.
@@ -61,7 +61,7 @@ function select_many(source::Enumerable, f_collectionSelector::Function, collect
 end
 
 # TODO This should be changed to a lazy implementation
-function Base.start{T,SO,CS,RS}(iter::EnumerableSelectMany{T,SO,CS,RS})
+function Base.start(iter::EnumerableSelectMany{T,SO,CS,RS}) where {T,SO,CS,RS}
     results = Array{T}(0)
     for i in iter.source
         for j in iter.collectionSelector(i)
@@ -72,13 +72,13 @@ function Base.start{T,SO,CS,RS}(iter::EnumerableSelectMany{T,SO,CS,RS})
     return results,1
 end
 
-function Base.next{T,SO,CS,RS}(iter::EnumerableSelectMany{T,SO,CS,RS},state)
+function Base.next(iter::EnumerableSelectMany{T,SO,CS,RS},state) where {T,SO,CS,RS}
     results = state[1]
     curr_index = state[2]
     return results[curr_index], (results, curr_index+1)
 end
 
-function Base.done{T,SO,CS,RS}(iter::EnumerableSelectMany{T,SO,CS,RS},state)
+function Base.done(iter::EnumerableSelectMany{T,SO,CS,RS},state) where {T,SO,CS,RS}
     results = state[1]
     curr_index = state[2]
     return curr_index > length(results)
