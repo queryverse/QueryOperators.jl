@@ -14,7 +14,7 @@ include("enumerable/enumerable_groupjoin.jl")
 include("enumerable/enumerable_orderby.jl")
 include("enumerable/enumerable_map.jl")
 include("enumerable/enumerable_filter.jl")
-include("enumerable/enumerable_selectmany.jl")
+include("enumerable/enumerable_mapmany.jl")
 include("enumerable/enumerable_defaultifempty.jl")
 include("enumerable/enumerable_count.jl")
 

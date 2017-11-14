@@ -1,12 +1,12 @@
-struct EnumerableSelectMany{T,SO,CS<:Function,RS<:Function} <: Enumerable
+struct EnumerableMapMany{T,SO,CS<:Function,RS<:Function} <: Enumerable
     source::SO
     collectionSelector::CS
     resultSelector::RS
 end
 
-Base.eltype(iter::EnumerableSelectMany{T,SO,CS,RS}) where {T,SO,CS,RS} = T
+Base.eltype(iter::EnumerableMapMany{T,SO,CS,RS}) where {T,SO,CS,RS} = T
 
-Base.eltype(iter::Type{EnumerableSelectMany{T,SO,CS,RS}}) where {T,SO,CS,RS} = T
+Base.eltype(iter::Type{EnumerableMapMany{T,SO,CS,RS}}) where {T,SO,CS,RS} = T
 
 # TODO Make sure this is actually correct. We might have to be more selective,
 # i.e. only scan arguments for certain types of expression etc.
@@ -34,7 +34,7 @@ function expr_contains_ref_to(expr::QuoteNode, var_name::Symbol)
     return expr==var_name
 end
 
-function select_many(source::Enumerable, f_collectionSelector::Function, collectionSelector::Expr, f_resultSelector::Function, resultSelector::Expr)
+function mapmany(source::Enumerable, f_collectionSelector::Function, collectionSelector::Expr, f_resultSelector::Function, resultSelector::Expr)
     TS = eltype(source)
     # First detect whether the collectionSelector return value depends at all
     # on the value of the anonymous function argument
@@ -57,11 +57,11 @@ function select_many(source::Enumerable, f_collectionSelector::Function, collect
     CS = typeof(f_collectionSelector)
     RS = typeof(f_resultSelector)
 
-    return EnumerableSelectMany{T,SO,CS,RS}(source,f_collectionSelector,f_resultSelector)
+    return EnumerableMapMany{T,SO,CS,RS}(source,f_collectionSelector,f_resultSelector)
 end
 
 # TODO This should be changed to a lazy implementation
-function Base.start(iter::EnumerableSelectMany{T,SO,CS,RS}) where {T,SO,CS,RS}
+function Base.start(iter::EnumerableMapMany{T,SO,CS,RS}) where {T,SO,CS,RS}
     results = Array{T}(0)
     for i in iter.source
         for j in iter.collectionSelector(i)
@@ -72,21 +72,21 @@ function Base.start(iter::EnumerableSelectMany{T,SO,CS,RS}) where {T,SO,CS,RS}
     return results,1
 end
 
-function Base.next(iter::EnumerableSelectMany{T,SO,CS,RS},state) where {T,SO,CS,RS}
+function Base.next(iter::EnumerableMapMany{T,SO,CS,RS},state) where {T,SO,CS,RS}
     results = state[1]
     curr_index = state[2]
     return results[curr_index], (results, curr_index+1)
 end
 
-function Base.done(iter::EnumerableSelectMany{T,SO,CS,RS},state) where {T,SO,CS,RS}
+function Base.done(iter::EnumerableMapMany{T,SO,CS,RS},state) where {T,SO,CS,RS}
     results = state[1]
     curr_index = state[2]
     return curr_index > length(results)
 end
 
-macro select_many_internal(source,collectionSelector,resultSelector)
+macro mapmany_internal(source,collectionSelector,resultSelector)
 	q_collectionSelector = Expr(:quote, collectionSelector)
 	q_resultSelector = Expr(:quote, resultSelector)
 
-	:(select_many($(esc(source)), $(esc(collectionSelector)), $(esc(q_collectionSelector)), $(esc(resultSelector)), $(esc(q_resultSelector))))
+	:(mapmany($(esc(source)), $(esc(collectionSelector)), $(esc(q_collectionSelector)), $(esc(resultSelector)), $(esc(q_resultSelector))))
 end
