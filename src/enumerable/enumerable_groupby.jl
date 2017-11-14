@@ -16,7 +16,7 @@ Base.eltype(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}) where {T,TKey,TS,SO,
 
 Base.eltype(iter::Type{EnumerableGroupBySimple{T,TKey,TS,SO,ES}}) where {T,TKey,TS,SO,ES} = T
 
-function group_by(source::Enumerable, f_elementSelector::Function, elementSelector::Expr)
+function groupby(source::Enumerable, f_elementSelector::Function, elementSelector::Expr)
     TS = eltype(source)
     TKey = Base._return_type(f_elementSelector, Tuple{TS,})
 
@@ -64,7 +64,7 @@ Base.eltype(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}) where {T,TKey,TR,SO,ES} = 
 
 Base.eltype(iter::Type{EnumerableGroupBy{T,TKey,TR,SO,ES}}) where {T,TKey,TR,SO,ES} = T
 
-function group_by(source::Enumerable, f_elementSelector::Function, elementSelector::Expr, f_resultSelector::Function, resultSelector::Expr)
+function groupby(source::Enumerable, f_elementSelector::Function, elementSelector::Expr, f_resultSelector::Function, resultSelector::Expr)
     TS = eltype(source)
     TKey = Base._return_type(f_elementSelector, Tuple{TS,})
 
@@ -105,15 +105,15 @@ function Base.done(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}, state) where {T,TKe
     return curr_index > length(results)
 end
 
-macro group_by_internal(source,elementSelector,resultSelector)
+macro groupby_internal(source,elementSelector,resultSelector)
 	q_elementSelector = Expr(:quote, elementSelector)
 	q_resultSelector = Expr(:quote, resultSelector)
 
-	:(group_by($(esc(source)), $(esc(elementSelector)), $(esc(q_elementSelector)), $(esc(resultSelector)), $(esc(q_resultSelector))))
+	:(groupby($(esc(source)), $(esc(elementSelector)), $(esc(q_elementSelector)), $(esc(resultSelector)), $(esc(q_resultSelector))))
 end
 
-macro group_by_internal_simple(source,elementSelector)
+macro groupby_internal_simple(source,elementSelector)
 	q_elementSelector = Expr(:quote, elementSelector)
 
-	:(group_by($(esc(source)), $(esc(elementSelector)), $(esc(q_elementSelector))))
+	:(groupby($(esc(source)), $(esc(elementSelector)), $(esc(q_elementSelector))))
 end
