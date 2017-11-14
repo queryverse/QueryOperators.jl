@@ -9,7 +9,7 @@ source_1 = [1,2,2,3,4]
 
 @test collect(QueryOperators.@map_internal(QueryOperators.query(source_1), i->i^2)) == [1,4,4,9,16]
 
-group_result_1 = collect(QueryOperators.@group_by_internal(QueryOperators.query(source_1), i->i, i->i^2))
+group_result_1 = collect(QueryOperators.@groupby_internal(QueryOperators.query(source_1), i->i, i->i^2))
 
 @test group_result_1[1].key == 1
 @test group_result_1[1][1] == 1
