@@ -21,11 +21,6 @@ function filter(source::Enumerable, filter_func::Function, filter_expr::Expr)
     return EnumerableFilter{T,S,Q}(source, filter_func)
 end
 
-macro filter_internal(source, f)
-    q = Expr(:quote, f)
-    :(QueryOperators.filter($(esc(source)), $(esc(f)), $(esc(q))))
-end
-
 function Base.start(iter::EnumerableFilter{T,S,Q}) where {T,S,Q}
     s = start(iter.source)
     while !done(iter.source, s)

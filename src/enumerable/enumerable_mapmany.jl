@@ -83,10 +83,3 @@ function Base.done(iter::EnumerableMapMany{T,SO,CS,RS},state) where {T,SO,CS,RS}
     curr_index = state[2]
     return curr_index > length(results)
 end
-
-macro mapmany_internal(source,collectionSelector,resultSelector)
-	q_collectionSelector = Expr(:quote, collectionSelector)
-	q_resultSelector = Expr(:quote, resultSelector)
-
-	:(mapmany($(esc(source)), $(esc(collectionSelector)), $(esc(q_collectionSelector)), $(esc(resultSelector)), $(esc(q_resultSelector))))
-end

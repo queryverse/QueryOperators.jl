@@ -69,11 +69,3 @@ function Base.done(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},st
     curr_index = state[2]
     return curr_index > length(results)
 end
-
-macro groupjoin_internal(outer, inner, outerKeySelector, innerKeySelector, resultSelector)
-	q_outerKeySelector = Expr(:quote, outerKeySelector)
-	q_innerKeySelector = Expr(:quote, innerKeySelector)
-	q_resultSelector = Expr(:quote, resultSelector)
-
-	:(groupjoin($(esc(outer)), $(esc(inner)), $(esc(outerKeySelector)), $(esc(q_outerKeySelector)), $(esc(innerKeySelector)),$(esc(q_innerKeySelector)), $(esc(resultSelector)),$(esc(q_resultSelector))))
-end

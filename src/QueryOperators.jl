@@ -7,6 +7,8 @@ using IteratorInterfaceExtensions
 
 export Grouping
 
+include("operators.jl")
+
 include("enumerable/enumerable.jl")
 include("enumerable/enumerable_groupby.jl")
 include("enumerable/enumerable_join.jl")

@@ -30,12 +30,3 @@ function count(source::Enumerable)
     state = start(source)
     return _count(source, state)
 end
-
-macro count_internal(source, f)
-    q = Expr(:quote, f)
-    :(count($(esc(source)), $(esc(f)), $(esc(q))))
-end
-
-macro count_internal(source)
-    :(count($(esc(source))))
-end

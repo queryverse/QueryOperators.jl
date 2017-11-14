@@ -104,16 +104,3 @@ function Base.done(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}, state) where {T,TKe
     curr_index = state[2]
     return curr_index > length(results)
 end
-
-macro groupby_internal(source,elementSelector,resultSelector)
-	q_elementSelector = Expr(:quote, elementSelector)
-	q_resultSelector = Expr(:quote, resultSelector)
-
-	:(groupby($(esc(source)), $(esc(elementSelector)), $(esc(q_elementSelector)), $(esc(resultSelector)), $(esc(q_resultSelector))))
-end
-
-macro groupby_internal_simple(source,elementSelector)
-	q_elementSelector = Expr(:quote, elementSelector)
-
-	:(groupby($(esc(source)), $(esc(elementSelector)), $(esc(q_elementSelector))))
-end

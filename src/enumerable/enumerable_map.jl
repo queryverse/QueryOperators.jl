@@ -19,11 +19,6 @@ function map(source::Enumerable, f::Function, f_expr::Expr)
     return EnumerableMap{T,S,Q}(source, f)
 end
 
-macro map_internal(source, f)
-    q = Expr(:quote, f)
-    :(map($(esc(source)), $(esc(f)), $(esc(q))))
-end
-
 function Base.start(iter::EnumerableMap{T,S,Q}) where {T,S,Q}
     s = start(iter.source)
     return s
