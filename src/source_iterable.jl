@@ -1,4 +1,4 @@
-immutable EnumerableIterable{T,S} <: Enumerable
+struct EnumerableIterable{T,S} <: Enumerable
     source::S
 end
 
@@ -13,23 +13,23 @@ function query(source)
     return source_enumerable
 end
 
-Base.iteratorsize{T,S}(::Type{EnumerableIterable{T,S}}) = Base.iteratorsize(S)
+Base.iteratorsize(::Type{EnumerableIterable{T,S}}) where {T,S} = Base.iteratorsize(S)
 
-Base.eltype{T,S}(iter::EnumerableIterable{T,S}) = T
+Base.eltype(iter::EnumerableIterable{T,S}) where {T,S} = T
 
-Base.eltype{T,S}(iter::Type{EnumerableIterable{T,S}}) = T
+Base.eltype(iter::Type{EnumerableIterable{T,S}}) where {T,S} = T
 
-Base.length{T,S}(iter::EnumerableIterable{T,S}) = length(iter.source)
+Base.length(iter::EnumerableIterable{T,S}) where {T,S} = length(iter.source)
 
-function Base.start{T,S}(iter::EnumerableIterable{T,S})
+function Base.start(iter::EnumerableIterable{T,S}) where {T,S}
     return start(iter.source)
 end
 
-@inline function Base.next{T,S}(iter::EnumerableIterable{T,S}, state)
+@inline function Base.next(iter::EnumerableIterable{T,S}, state) where {T,S}
     return next(iter.source, state)
 end
 
-function Base.done{T,S}(iter::EnumerableIterable{T,S}, state)
+function Base.done(iter::EnumerableIterable{T,S}, state) where {T,S}
     return done(iter.source, state)
 end
 

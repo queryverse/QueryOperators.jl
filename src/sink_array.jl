@@ -7,6 +7,6 @@ function Base.collect(enumerable::Enumerable)
     return ret
 end
 
-function Base.collect{TS,Provider}(source::Queryable{TS,Provider})
+function Base.collect(source::Queryable{TS,Provider}) where {TS,Provider}
     collect(Provider, source)
 end

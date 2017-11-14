@@ -14,11 +14,11 @@ struct EnumerableFilterState{T,S}
     source_state::S
 end
 
-function filter(source::Enumerable, filter::Function, filter_expr::Expr)
+function filter(source::Enumerable, filter_func::Function, filter_expr::Expr)
     T = eltype(source)
     S = typeof(source)
-    Q = typeof(filter)
-    return EnumerableFilter{T,S,Q}(source, filter)
+    Q = typeof(filter_func)
+    return EnumerableFilter{T,S,Q}(source, filter_func)
 end
 
 macro filter_internal(source, f)
