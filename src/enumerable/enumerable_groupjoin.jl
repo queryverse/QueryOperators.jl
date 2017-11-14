@@ -10,7 +10,7 @@ Base.eltype(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}) where {T
 
 Base.eltype(iter::Type{EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}}) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS} = T
 
-function group_join(outer::Enumerable, inner::Enumerable, f_outerKeySelector::Function, outerKeySelector::Expr, f_innerKeySelector::Function, innerKeySelector::Expr, f_resultSelector::Function, resultSelector::Expr)
+function groupjoin(outer::Enumerable, inner::Enumerable, f_outerKeySelector::Function, outerKeySelector::Expr, f_innerKeySelector::Function, innerKeySelector::Expr, f_resultSelector::Function, resultSelector::Expr)
     TO = eltype(outer)
     TI = eltype(inner)
     TKeyOuter = Base._return_type(f_outerKeySelector, Tuple{TO,})
@@ -70,10 +70,10 @@ function Base.done(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS},st
     return curr_index > length(results)
 end
 
-macro group_join_internal(outer, inner, outerKeySelector, innerKeySelector, resultSelector)
+macro groupjoin_internal(outer, inner, outerKeySelector, innerKeySelector, resultSelector)
 	q_outerKeySelector = Expr(:quote, outerKeySelector)
 	q_innerKeySelector = Expr(:quote, innerKeySelector)
 	q_resultSelector = Expr(:quote, resultSelector)
 
-	:(group_join($(esc(outer)), $(esc(inner)), $(esc(outerKeySelector)), $(esc(q_outerKeySelector)), $(esc(innerKeySelector)),$(esc(q_innerKeySelector)), $(esc(resultSelector)),$(esc(q_resultSelector))))
+	:(groupjoin($(esc(outer)), $(esc(inner)), $(esc(outerKeySelector)), $(esc(q_outerKeySelector)), $(esc(innerKeySelector)),$(esc(q_innerKeySelector)), $(esc(resultSelector)),$(esc(q_resultSelector))))
 end
