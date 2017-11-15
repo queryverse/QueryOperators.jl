@@ -1,7 +1,6 @@
 module QueryOperators
 
 using DataStructures
-using DataValues
 using NamedTuples
 using IteratorInterfaceExtensions
 
