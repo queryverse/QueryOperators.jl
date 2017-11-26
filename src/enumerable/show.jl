@@ -50,7 +50,7 @@ function printtable(io::IO, source::Enumerable)
         end
     end      
     for r in 2:size(data,1)
-        println()
+        println(io)
         for c in 1:size(data,2)
             
             if r in shortened_rows
