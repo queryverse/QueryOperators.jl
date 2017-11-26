@@ -4,7 +4,7 @@ struct EnumerableOrderby{T,S,KS<:Function,TKS} <: Enumerable
     descending::Bool
 end
 
-Base.iteratorsize(::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = Base.iteratorsize(S)
+Base.iteratorsize(::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = Base.iteratorsize(S) in (Base.HasLength(), Base.HasShape()) ? Base.HasLength() : Base.iteratorsize(S)
 
 Base.eltype(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS} = T
 
@@ -31,11 +31,11 @@ function orderby_descending(source::Enumerable, f::Function, f_expr::Expr)
 end
 
 function Base.start(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS}
-    rows = Base.iteratorsize(typeof(iter))==Base.HasLength() ? length(iter) : 0
+    rows = Base.iteratorsize(typeof(iter)) in (Base.HasLength(), Base.HasShape()) ? length(iter) : 0
 
     elements = Array{T}(rows)
 
-    if Base.iteratorsize(typeof(iter))==Base.HasLength()
+    if Base.iteratorsize(typeof(iter)) in (Base.HasLength(), Base.HasShape())
         for i in enumerate(iter.source)
             elements[i[1]] = i[2]
         end
@@ -109,11 +109,11 @@ function Base.start(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS}
         return n1 < n2
     end
 
-    rows = Base.iteratorsize(typeof(iter))==Base.HasLength() ? length(iter) : 0
+    rows = Base.iteratorsize(typeof(iter)) in (Base.HasLength(), Base.HasShape()) ? length(iter) : 0
 
     elements = Array{T}(rows)
 
-    if Base.iteratorsize(typeof(iter))==Base.HasLength()
+    if Base.iteratorsize(typeof(iter)) in (Base.HasLength(), Base.HasShape())
         for i in enumerate(iter.source)
             elements[i[1]] = i[2]
         end        

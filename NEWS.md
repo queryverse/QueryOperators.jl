@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.1.1 Release Notes
+* Enable precompile
+
 # QueryOperators.jl v0.1.0 Release Notes
 * Rename many query operators
 
