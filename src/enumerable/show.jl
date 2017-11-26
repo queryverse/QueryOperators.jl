@@ -127,10 +127,48 @@ function printsequence(io::IO, source::Enumerable)
     end
 end
 
+function printHTMLtable(io, source)
+    colnames = String.(fieldnames(eltype(source)))
+
+    haslimit = get(io, :limit, true)
+    max_elements = 10
+
+    # Header
+    print(io, "<table>")
+    print(io, "<thead>")
+    print(io, "<tr>")
+    for c in colnames
+        print(io, "<th>")
+        print(io, c)
+        print(io, "</th>")
+    end
+    print(io, "</tr>")
+    print(io, "</thead>")
+
+    # Body
+    for r in Iterators.take(source, max_elements)
+        print(io, "<tr>")
+        for c in values(r)
+            print(io, "<td>")
+            html_escape
+            print(io, "</td>")
+        end
+        print(io, "</tr>")
+    end
+end
+
 function Base.show(io::IO, source::Enumerable)
     if eltype(source) <: NamedTuple
         printtable(io, source)
     else
         printsequence(io, source)
     end
+end
+
+function Base.show(io::IO, ::MIME"text/html", source::Enumerable)
+    if eltype(source) <: NamedTuple
+        printHTMLtable(io, source)
+    else
+        error("Not implemented.")
+    end    
 end
