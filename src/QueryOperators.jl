@@ -24,8 +24,9 @@ include("enumerable/show.jl")
 include("queryable/queryable.jl")
 include("queryable/queryable_map.jl")
 include("queryable/queryable_filter.jl")
+include("queryable/sink_array.jl")
 
 include("source_iterable.jl")
-include("sink_array.jl")
+
 
 end # module
