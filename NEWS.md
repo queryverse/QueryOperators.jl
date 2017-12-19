@@ -1,3 +1,8 @@
+# QueryOperators.jl v0.2.0 Release Notes
+* Add pretty show method
+* Fix some bugs
+* Add @drop and @take operators
+
 # QueryOperators.jl v0.1.1 Release Notes
 * Enable precompile
 
