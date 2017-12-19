@@ -19,6 +19,8 @@ include("enumerable/enumerable_filter.jl")
 include("enumerable/enumerable_mapmany.jl")
 include("enumerable/enumerable_defaultifempty.jl")
 include("enumerable/enumerable_count.jl")
+include("enumerable/enumerable_take.jl")
+include("enumerable/enumerable_drop.jl")
 include("enumerable/show.jl")
 
 include("queryable/queryable.jl")

@@ -24,4 +24,8 @@ group_result_1 = collect(QueryOperators.@groupby(QueryOperators.query(source_1),
 @test group_result_1[4].key == 4
 @test group_result_1[4][1] == 16
 
+@test collect(QueryOperators.@take(QueryOperators.query(source_1), 2)) == [1,2]
+
+@test collect(QueryOperators.@drop(QueryOperators.query(source_1), 2)) == [2,3,4]
+
 end

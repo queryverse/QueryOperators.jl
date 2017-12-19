@@ -104,3 +104,15 @@ macro thenby_descending(source, f)
 	q = Expr(:quote, f)
     :(thenby_descending($(esc(source)), $(esc(f)), $(esc(q))))
 end
+
+function take end
+
+macro take(source, n)
+	:(take($(esc(source)), $(esc(n))))
+end
+
+function drop end
+
+macro drop(source, n)
+	:(drop($(esc(source)), $(esc(n))))
+end
