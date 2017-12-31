@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.2.1 Release Notes
+* Add missing eltype methods
+
 # QueryOperators.jl v0.2.0 Release Notes
 * Add pretty show method
 * Fix some bugs
