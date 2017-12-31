@@ -13,6 +13,8 @@ Base.iteratorsize(::Type{EnumerableDrop{T,S}}) where {T,S} = Base.iteratorsize(S
 
 Base.eltype(iter::EnumerableDrop{T,S}) where {T,S} = T
 
+Base.eltype(::Type{EnumerableDrop{T,S}}) where {T,S} = T
+
 Base.length(iter::EnumerableDrop{T,S}) where {T,S} = max(length(iter.source)-iter.n,0)
 
 function Base.start(iter::EnumerableDrop{T,S}) where {T,S}

@@ -13,6 +13,8 @@ Base.iteratorsize(::Type{EnumerableTake{T,S}}) where {T,S} = Base.iteratorsize(S
 
 Base.eltype(iter::EnumerableTake{T,S}) where {T,S} = T
 
+Base.eltype(::Type{EnumerableTake{T,S}}) where {T,S} = T
+
 Base.length(iter::EnumerableTake{T,S}) where {T,S} = min(length(iter.source),iter.n)
 
 function Base.start(iter::EnumerableTake{T,S}) where {T,S}
