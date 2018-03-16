@@ -4,6 +4,7 @@ using Base.Test
 @testset "QueryOperators" begin
 
 source_1 = [1,2,2,3,4]
+enum = QueryOperators.query(source_1)
 
 @test collect(QueryOperators.@filter(QueryOperators.query(source_1), i->i>2)) == [3,4]
 
@@ -28,4 +29,54 @@ group_result_1 = collect(QueryOperators.@groupby(QueryOperators.query(source_1),
 
 @test collect(QueryOperators.@drop(QueryOperators.query(source_1), 2)) == [2,3,4]
 
+@test QueryOperators.@count(enum) == 5
+
+function is_even(x::Int64)
+    x % 2 == 0
 end
+
+@test QueryOperators.count(enum, is_even, Expr(:dummy_expr)) == 3
+
+dropped_str = ""
+for i in QueryOperators.drop(enum, 2)
+    dropped_str *= string(i)
+end
+@test dropped_str == "234"
+
+taken_str = ""
+for i in QueryOperators.take(enum, 2)
+    taken_str *= string(i)
+end
+@test taken_str == "12"
+
+filtered_str = ""
+for i in QueryOperators.@filter(enum, x->x%2==0)
+    filtered_str *= string(i)
+end
+@test filtered_str == "224"
+
+@test collect(QueryOperators.@filter(enum, x->x<3)) == [1,2,2]
+@test collect(QueryOperators.filter(enum, x->x<3, Expr(:dummy_expr))) == [1,2,2]
+
+grouped = []
+for i in collect(QueryOperators.@groupby(QueryOperators.query(source_1), i->i, i->i^2))
+    push!(grouped, i)
+end
+
+@test grouped == [[1],[4,4],[9],[16]]
+
+mapped = []
+for i in collect(QueryOperators.@map(enum, i->i*3))
+    push!(mapped, i)
+end
+@test mapped == [3,6,6,9,12]
+
+
+# Show/table formatting tests -- we can only test that these don't error when called.
+#@test QueryOperators.printtable(Core.CoreSTDOUT(), enum) == nothing        # this is broken?
+@test QueryOperators.printHTMLtable(Core.CoreSTDOUT(), enum) == nothing
+@test QueryOperators.printsequence(Core.CoreSTDOUT(), enum) == nothing
+@test show(Core.CoreSTDOUT(), enum) == nothing
+
+end
+
