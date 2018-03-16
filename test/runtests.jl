@@ -31,7 +31,7 @@ group_result_1 = collect(QueryOperators.@groupby(QueryOperators.query(source_1),
 
 @test QueryOperators.@count(enum) == 5
 
-function is_even(x::Int64)
+function is_even(x::Int)
     x % 2 == 0
 end
 
