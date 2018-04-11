@@ -25,13 +25,13 @@ group_result_1 = collect(QueryOperators.@groupby(QueryOperators.query(source_1),
 @test group_result_1[4].key == 4
 @test group_result_1[4][1] == 16
 
-@test collect(QueryOperators.@take(QueryOperators.query(source_1), 2)) == [1,2]
+@test collect(QueryOperators.@take(enum, 2)) == [1,2]
 
-@test collect(QueryOperators.@drop(QueryOperators.query(source_1), 2)) == [2,3,4]
+@test collect(QueryOperators.@drop(enum, 2)) == [2,3,4]
 
 @test QueryOperators.@count(enum) == 5
 
-function is_even(x::Int)
+function is_even(x::Int64)
     x % 2 == 0
 end
 
@@ -59,7 +59,7 @@ end
 @test collect(QueryOperators.filter(enum, x->x<3, Expr(:dummy_expr))) == [1,2,2]
 
 grouped = []
-for i in collect(QueryOperators.@groupby(QueryOperators.query(source_1), i->i, i->i^2))
+for i in QueryOperators.@groupby(QueryOperators.query(source_1), i->i, i->i^2)
     push!(grouped, i)
 end
 
@@ -72,6 +72,35 @@ end
 @test mapped == [3,6,6,9,12]
 
 
+# ensure that the default value must be of the same type
+errored = false
+try 
+    QueryOperators.default_if_empty(source_1, "string")
+catch
+    errored = true
+end
+
+@test errored == true
+
+
+ordered = QueryOperators.orderby(enum, x -> -x, quote x -> -x end)
+@test collect(ordered) == [4, 3, 2, 2, 1]
+
+orderedlist = []
+for i in ordered
+    push!(orderedlist, i)
+end
+@test orderedlist == [4, 3, 2, 2, 1]
+
+ordered = QueryOperators.orderby_descending(enum, x -> -x, quote x -> -x end)
+@test collect(ordered) == [1, 2, 2, 3, 4]
+
+orderedlist = []
+for i in ordered
+    push!(orderedlist, i)
+end
+@test orderedlist == [1, 2, 2, 3, 4]
+
 # Show/table formatting tests -- we can only test that these don't error when called.
 #@test QueryOperators.printtable(Core.CoreSTDOUT(), enum) == nothing        # this is broken?
 @test QueryOperators.printHTMLtable(Core.CoreSTDOUT(), enum) == nothing
@@ -79,4 +108,3 @@ end
 @test show(Core.CoreSTDOUT(), enum) == nothing
 
 end
-
