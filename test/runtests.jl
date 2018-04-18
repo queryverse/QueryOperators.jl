@@ -123,10 +123,19 @@ outer = QueryOperators.query([1,2,3,4,5,6])
 inner = QueryOperators.query([2,3,4,5])
 
 join_desired = [[3,2], [4,3], [5,4], [6,5]]
-@test collect(QueryOperators.@join(outer, inner, x->x, x->x+1, (i,j)->[i,j])) == join_desired
+joined_list = []
+for i in collect(QueryOperators.@join(outer, inner, x->x, x->x+1, (i,j)->[i,j]))
+    push!(joined_list, i)
+end
+@test joined_list == join_desired
+
 
 group_desired = [[1, Int64[]], [2, Int64[]], [3, [2]], [4, [3]], [5, [4]], [6, [5]]]
-@test collect(QueryOperators.@groupjoin(outer, inner, x->x, x->x+1, (i,j)->[i,j])) == group_desired
+grouped_list = []
+for i in collect(QueryOperators.@groupjoin(outer, inner, x->x, x->x+1, (i,j)->[i,j]))
+    push!(grouped_list, i)
+end
+@test grouped_list == group_desired
 
 
 # Show/table formatting tests -- we can only test that these don't error when called.
