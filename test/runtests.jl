@@ -31,12 +31,7 @@ group_result_1 = collect(QueryOperators.@groupby(QueryOperators.query(source_1),
 @test collect(QueryOperators.@drop(enum, 2)) == [2,3,4]
 
 @test QueryOperators.@count(enum) == 5
-
-function is_even(x::Int)
-    x % 2 == 0
-end
-
-@test QueryOperators.count(enum, is_even, Expr(:dummy_expr)) == 3
+@test QueryOperators.@count(enum, x->x%2==0) == 3
 
 dropped_str = ""
 for i in QueryOperators.drop(enum, 2)
@@ -69,7 +64,6 @@ end
 @test filtered_str == ""
 
 @test collect(QueryOperators.@filter(enum, x->x<3)) == [1,2,2]
-@test collect(QueryOperators.filter(enum, x->x<3, Expr(:dummy_expr))) == [1,2,2]
 
 grouped = []
 for i in QueryOperators.@groupby(QueryOperators.query(source_1), i->i, i->i^2)
@@ -88,14 +82,14 @@ end
 # ensure that the default value must be of the same type
 errored = false
 try 
-    QueryOperators.default_if_empty(source_1, "string")
+    QueryOperators.@default_if_empty(source_1, "string")
 catch
     errored = true
 end
 
 @test errored == true
 
-ordered = QueryOperators.orderby(enum, x -> -x, quote x -> -x end)
+ordered = QueryOperators.@orderby(enum, x -> -x)
 @test collect(ordered) == [4, 3, 2, 2, 1]
 
 orderedlist = []
@@ -104,7 +98,7 @@ for i in ordered
 end
 @test orderedlist == [4, 3, 2, 2, 1]
 
-ordered = QueryOperators.orderby_descending(enum, x -> -x, quote x -> -x end)
+ordered = QueryOperators.@orderby_descending(enum, x -> -x)
 @test collect(ordered) == [1, 2, 2, 3, 4]
 
 orderedlist = []
@@ -115,7 +109,7 @@ end
 
 
 desired = [[1], [2, 2, 3], [4]]
-grouped = QueryOperators.groupby(enum, x -> floor(x/2), quote x -> floor(x/2) end)
+grouped = QueryOperators.@groupby(enum, x -> floor(x/2), x->x)
 @test collect(grouped) == desired
 
 g = []
@@ -123,6 +117,16 @@ for i in grouped
     push!(g, i)
 end
 @test g == desired
+
+
+outer = QueryOperators.query([1,2,3,4,5,6])
+inner = QueryOperators.query([2,3,4,5])
+
+join_desired = [[3,2], [4,3], [5,4], [6,5]]
+@test collect(QueryOperators.@join(outer, inner, x->x, x->x+1, (i,j)->[i,j])) == join_desired
+
+group_desired = [[1, Int64[]], [2, Int64[]], [3, [2]], [4, [3]], [5, [4]], [6, [5]]]
+@test collect(QueryOperators.@groupjoin(outer, inner, x->x, x->x+1, (i,j)->[i,j])) == group_desired
 
 
 # Show/table formatting tests -- we can only test that these don't error when called.
