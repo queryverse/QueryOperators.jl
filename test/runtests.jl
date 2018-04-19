@@ -1,6 +1,7 @@
 using QueryOperators
 using Base.Test
 using NamedTuples
+using DataValues
 
 @testset "QueryOperators" begin
 
@@ -89,6 +90,24 @@ end
 
 @test errored == true
 
+
+# default_if_empty for regular array
+d = []
+for i in QueryOperators.@default_if_empty(source_1, 0)
+    push!(d, i)
+end
+@test d == [1, 2, 2, 3, 4]
+
+# # default_if_empty with empty values
+# # TODO
+# intlist = Array{Nullable{Int}}([1, 2, 3, 4, nothing])
+# nt = @NT(a = 1, b = 2, c = nothing)
+# tuplist = [nt, nt]
+
+@test collect(QueryOperators.default_if_empty(DataValue{Int}[]))[1] == DataValue{Int}()
+@test collect(QueryOperators.default_if_empty(DataValue{Int}[], DataValue{Int}()))[1] == DataValue{Int}()
+
+
 ordered = QueryOperators.@orderby(enum, x -> -x)
 @test collect(ordered) == [4, 3, 2, 2, 1]
 
@@ -111,6 +130,9 @@ end
 desired = [[1], [2, 2, 3], [4]]
 grouped = QueryOperators.@groupby(enum, x -> floor(x/2), x->x)
 @test collect(grouped) == desired
+
+group_no_macro = QueryOperators.groupby(enum, x -> floor(x/2), quote x->floor(x/2) end)
+@test collect(group_no_macro) == desired
 
 outer = QueryOperators.query([1,2,3,4,5,6])
 inner = QueryOperators.query([2,3,4,5])
