@@ -109,11 +109,16 @@ end
 @test collect(QueryOperators.default_if_empty(DataValue{Int}[]))[1] == DataValue{Int}()
 @test collect(QueryOperators.default_if_empty(DataValue{Int}[], DataValue{Int}()))[1] == DataValue{Int}()
 
+# passing in a NamedTuple of DataValues
+nt = @NT(a=DataValue(2), b=DataValue("test"), c=DataValue(3))
+def = QueryOperators.default_if_empty(typeof(nt)[])
+@test typeof(collect(def)[1]) == typeof(nt)
 
 ordered = QueryOperators.@orderby(enum, x -> -x)
 @test collect(ordered) == [4, 3, 2, 2, 1]
 
-@test collect(QueryOperators.@orderby(QueryOperators.@filter(enum, x->x%2 == 0), x->x)) == [2, 2, 4]
+filtered = QueryOperators.@orderby(QueryOperators.@filter(enum, x->x%2 == 0), x->x)
+@test collect(filtered) == [2, 2, 4]
 
 ordered = QueryOperators.@orderby_descending(enum, x -> -x)
 @test collect(ordered) == [1, 2, 2, 3, 4]
