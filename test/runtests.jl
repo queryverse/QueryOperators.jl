@@ -1,3 +1,5 @@
+Pkg.add("DataValues")
+
 using QueryOperators
 using Base.Test
 using NamedTuples
@@ -135,6 +137,12 @@ group_desired = [[1, Int64[]], [2, Int64[]], [3, [2]], [4, [3]], [5, [4]], [6, [
 many_map_desired =  [[1, 2], [2, 4], [2, 4], [3, 6], [4, 8]]
 success = collect(QueryOperators.@mapmany(enum, x->[x*2], (x,y)->[x,y])) == many_map_desired
 @test success       # for some reason, this is required to avoid a BoundsError
+
+first = QueryOperators.query([1, 2])
+second = [3, 4]
+many_map_desired = [(1,3), (1,4), (2,3), (2,4)]
+success = collect(QueryOperators.@mapmany(first, i->second, (x,y)->(x,y))) == many_map_desired
+@test success
 
 # Show/table formatting tests -- we can only test that these don't error when called.
 #@test QueryOperators.printtable(Core.CoreSTDOUT(), enum) == nothing        # this is broken?
