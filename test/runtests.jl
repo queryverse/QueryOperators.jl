@@ -144,10 +144,14 @@ many_map_desired = [(1,3), (1,4), (2,3), (2,4)]
 success = collect(QueryOperators.@mapmany(first, i->second, (x,y)->(x,y))) == many_map_desired
 @test success
 
+ntups = QueryOperators.query([@NT(a=1, b=2, c=3), @NT(a=4, b=5, c=6)])
 # Show/table formatting tests -- we can only test that these don't error when called.
-#@test QueryOperators.printtable(Core.CoreSTDOUT(), enum) == nothing        # this is broken?
+@test QueryOperators.printtable(Core.CoreSTDOUT(), ntups) == nothing
 @test QueryOperators.printHTMLtable(Core.CoreSTDOUT(), enum) == nothing
+@test QueryOperators.printHTMLtable(Core.CoreSTDOUT(), ntups) == nothing
 @test QueryOperators.printsequence(Core.CoreSTDOUT(), enum) == nothing
+@test QueryOperators.printsequence(Core.CoreSTDOUT(), ntups) == nothing
 @test show(Core.CoreSTDOUT(), enum) == nothing
+@test show(Core.CoreSTDOUT(), ntups) == nothing
 
 end
