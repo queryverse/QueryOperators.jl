@@ -1,5 +1,3 @@
-Pkg.add("DataValues")
-
 using QueryOperators
 using Base.Test
 using NamedTuples
@@ -113,21 +111,10 @@ end
 ordered = QueryOperators.@orderby(enum, x -> -x)
 @test collect(ordered) == [4, 3, 2, 2, 1]
 
-orderedlist = []
-for i in ordered
-    push!(orderedlist, i)
-end
-@test orderedlist == [4, 3, 2, 2, 1]
+@test collect(QueryOperators.@orderby(QueryOperators.@filter(enum, x->x%2 == 0), x->x)) == [2, 2, 4]
 
 ordered = QueryOperators.@orderby_descending(enum, x -> -x)
 @test collect(ordered) == [1, 2, 2, 3, 4]
-
-orderedlist = []
-for i in ordered
-    push!(orderedlist, i)
-end
-@test orderedlist == [1, 2, 2, 3, 4]
-
 
 desired = [[1], [2, 2, 3], [4]]
 grouped = QueryOperators.@groupby(enum, x -> floor(x/2), x->x)
