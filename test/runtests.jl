@@ -1,5 +1,8 @@
 using QueryOperators
+using NamedTuples
 using Base.Test
+
+struct Empty end
 
 @testset "QueryOperators" begin
 
@@ -27,5 +30,8 @@ group_result_1 = collect(QueryOperators.@groupby(QueryOperators.query(source_1),
 @test collect(QueryOperators.@take(QueryOperators.query(source_1), 2)) == [1,2]
 
 @test collect(QueryOperators.@drop(QueryOperators.query(source_1), 2)) == [2,3,4]
+
+source_2 = [@NT(a=Empty()), @NT(a=Empty())]
+@test QueryOperators.default_if_empty(source_2) == QueryOperators.EnumerableDefaultIfEmpty(source_2, @NT(a=Empty()))
 
 end
