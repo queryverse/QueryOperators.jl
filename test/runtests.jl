@@ -1,5 +1,3 @@
-Pkg.add("DataValues")
-
 using QueryOperators
 using Base.Test
 using NamedTuples
@@ -14,25 +12,8 @@ enum = QueryOperators.query(source_1)
 
 @test collect(QueryOperators.@map(QueryOperators.query(source_1), i->i^2)) == [1,4,4,9,16]
 
-group_result_1 = collect(QueryOperators.@groupby(QueryOperators.query(source_1), i->i, i->i^2))
-
-@test group_result_1[1].key == 1
-@test group_result_1[1][1] == 1
-
-@test group_result_1[2].key == 2
-@test group_result_1[2][1] == 4
-@test group_result_1[2][2] == 4
-
-@test group_result_1[3].key == 3
-@test group_result_1[3][1] == 9
-
-@test group_result_1[4].key == 4
-@test group_result_1[4][1] == 16
-
 @test collect(QueryOperators.@take(enum, 2)) == [1,2]
-
 @test collect(QueryOperators.@drop(enum, 2)) == [2,3,4]
-
 @test QueryOperators.@count(enum) == 5
 @test QueryOperators.@count(enum, x->x%2==0) == 3
 
@@ -100,12 +81,6 @@ for i in QueryOperators.@default_if_empty(source_1, 0)
 end
 @test d == [1, 2, 2, 3, 4]
 
-# # default_if_empty with empty values
-# # TODO
-# intlist = Array{Nullable{Int}}([1, 2, 3, 4, nothing])
-# nt = @NT(a = 1, b = 2, c = nothing)
-# tuplist = [nt, nt]
-
 @test collect(QueryOperators.default_if_empty(DataValue{Int}[]))[1] == DataValue{Int}()
 @test collect(QueryOperators.default_if_empty(DataValue{Int}[], DataValue{Int}()))[1] == DataValue{Int}()
 
@@ -122,6 +97,7 @@ filtered = QueryOperators.@orderby(QueryOperators.@filter(enum, x->x%2 == 0), x-
 
 ordered = QueryOperators.@orderby_descending(enum, x -> -x)
 @test collect(ordered) == [1, 2, 2, 3, 4]
+
 
 desired = [[1], [2, 2, 3], [4]]
 grouped = QueryOperators.@groupby(enum, x -> floor(x/2), x->x)
