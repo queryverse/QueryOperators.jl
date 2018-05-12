@@ -63,7 +63,6 @@ end
 function _map(source::Enumerable, f::Function, f_expr::Expr, ::Base.EltypeUnknown)
     S = typeof(source)
     Q = typeof(f)
-    println("Unkonwn")
     return EnumerableMapEltypeUnknown{S,Q}(source, f)
 end
 
@@ -73,7 +72,6 @@ function _map(source::Enumerable, f::Function, f_expr::Expr, ::Base.HasEltype)
     if isleaftype(T)
         S = typeof(source)
         Q = typeof(f)
-        println("Known")
         return EnumerableMapHasEltype{T,S,Q}(source, f)
     else
         _map(source, f, f_expr, Base.EltypeUnknown())
