@@ -136,5 +136,6 @@ ntups = QueryOperators.query([@NT(a=1, b=2, c=3), @NT(a=4, b=5, c=6)])
 @test show(Core.CoreSTDOUT(), ntups) == nothing
 
 include("test_enumerable_map.jl")
+include("test_enumerable_filter.jl")
 
 end
