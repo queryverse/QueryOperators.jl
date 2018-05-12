@@ -1,23 +1,22 @@
-struct EnumerableDrop{T,S} <: Enumerable
+struct EnumerableDrop{S} <: Enumerable
     source::S
     n::Int
 end
 
 function drop(source::Enumerable, n::Integer)
-    T = eltype(source)
     S = typeof(source)
-    return EnumerableDrop{T,S}(source, Int(n))
+    return EnumerableDrop{S}(source, Int(n))
 end
 
-Base.iteratorsize(::Type{EnumerableDrop{T,S}}) where {T,S} = Base.iteratorsize(S) in (Base.HasLength(), Base.HasShape()) ? Base.HasLength() : Base.SizeUnknown()
+Base.iteratorsize(::Type{EnumerableDrop{S}}) where {S} = Base.iteratorsize(S) in (Base.HasLength(), Base.HasShape()) ? Base.HasLength() : Base.SizeUnknown()
 
-Base.eltype(iter::EnumerableDrop{T,S}) where {T,S} = T
+Base.iteratoreltype(::Type{EnumerableDrop{S}}) where {S} = Base.iteratoreltype(S)
 
-Base.eltype(::Type{EnumerableDrop{T,S}}) where {T,S} = T
+Base.eltype(::Type{EnumerableDrop{S}}) where {S} = eltype(S)
 
-Base.length(iter::EnumerableDrop{T,S}) where {T,S} = max(length(iter.source)-iter.n,0)
+Base.length(iter::EnumerableDrop{S}) where {S} = max(length(iter.source)-iter.n,0)
 
-function Base.start(iter::EnumerableDrop{T,S}) where {T,S}
+function Base.start(iter::EnumerableDrop{S}) where {S}
     source_state = start(iter.source)
     for i in 1:iter.n
         if done(iter.source, source_state)
@@ -29,10 +28,10 @@ function Base.start(iter::EnumerableDrop{T,S}) where {T,S}
     return source_state
 end
 
-function Base.next(iter::EnumerableDrop{T,S}, s) where {T,S}
+function Base.next(iter::EnumerableDrop{S}, s) where {S}
     return next(iter.source, s)
 end
 
-function Base.done(iter::EnumerableDrop{T,S}, state) where {T,S}
+function Base.done(iter::EnumerableDrop{S}, state) where {S}
     return done(iter.source, state)
 end
