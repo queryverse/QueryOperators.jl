@@ -4,6 +4,7 @@ module QueryOperators
 using DataStructures
 using NamedTuples
 using IteratorInterfaceExtensions
+using TableShowUtils
 
 export Grouping
 
