@@ -126,13 +126,24 @@ success = collect(QueryOperators.@mapmany(first, i->second, (x,y)->(x,y))) == ma
 @test success
 
 ntups = QueryOperators.query([@NT(a=1, b=2, c=3), @NT(a=4, b=5, c=6)])
-# Show/table formatting tests -- we can only test that these don't error when called.
-@test QueryOperators.printtable(Core.CoreSTDOUT(), ntups) == nothing
-@test QueryOperators.printHTMLtable(Core.CoreSTDOUT(), enum) == nothing
-@test QueryOperators.printHTMLtable(Core.CoreSTDOUT(), ntups) == nothing
-@test QueryOperators.printsequence(Core.CoreSTDOUT(), enum) == nothing
-@test QueryOperators.printsequence(Core.CoreSTDOUT(), ntups) == nothing
-@test show(Core.CoreSTDOUT(), enum) == nothing
-@test show(Core.CoreSTDOUT(), ntups) == nothing
+
+@test sprint(show, ntups) == """
+2x3 query result
+a │ b │ c
+──┼───┼──
+1 │ 2 │ 3
+4 │ 5 │ 6"""
+
+@test sprint(show, enum) == """
+5-element query result
+ 1
+ 2
+ 2
+ 3
+ 4"""
+
+
+@test sprint((stream,data)->show(stream, "text/html", data), ntups) ==
+    "<table><thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr></tbody></table>"
 
 end
