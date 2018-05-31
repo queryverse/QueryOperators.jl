@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.2.2 Release Notes
+* Fix show bug
+
 # QueryOperators.jl v0.2.1 Release Notes
 * Add missing eltype methods
 
