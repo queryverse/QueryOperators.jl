@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.2.3 Release Notes
+* Fix bug in mapmany
+
 # QueryOperators.jl v0.2.2 Release Notes
 * Fix show bug
 

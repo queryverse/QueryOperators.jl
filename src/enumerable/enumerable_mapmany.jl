@@ -48,7 +48,7 @@ function mapmany(source::Enumerable, f_collectionSelector::Function, collectionS
         TCE = input_type_collection_selector.parameters[1]
     else
         input_type_collection_selector = Base._return_type(f_collectionSelector, Tuple{TS,})
-        TCE = typeof(input_type_collection_selector)==Union || input_type_collection_selector==Any ? Any : input_type_collection_selector.parameters[1]
+        TCE = typeof(input_type_collection_selector)==Union || input_type_collection_selector==Any ? Any : eltype(input_type_collection_selector)
     end
 
     T = Base._return_type(f_resultSelector, Tuple{TS,TCE})
