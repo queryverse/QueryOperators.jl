@@ -2,11 +2,10 @@ __precompile__()
 module QueryOperators
 
 using DataStructures
-using NamedTuples
 using IteratorInterfaceExtensions
 using TableShowUtils
 
-export Grouping
+export Grouping, key
 
 include("operators.jl")
 

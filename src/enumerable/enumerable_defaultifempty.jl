@@ -3,15 +3,13 @@ struct EnumerableDefaultIfEmpty{T,S} <: Enumerable
     default_value::T
 end
 
-Base.eltype(iter::EnumerableDefaultIfEmpty{T,S}) where {T,S} = T
-
 Base.eltype(iter::Type{EnumerableDefaultIfEmpty{T,S}}) where {T,S} = T
 
 function default_if_empty(source::S) where {S}
     T = eltype(source)
 
     if T<:NamedTuple
-        default_value = T([i() for i in T.parameters]...)
+        default_value = T(([fieldtype(T,i)() for i in 1:length(fieldnames(T))]...,))
     else
         default_value = T()
     end
@@ -28,31 +26,20 @@ function default_if_empty(source::S, default_value::TD) where {S,TD}
     return EnumerableDefaultIfEmpty{T,S}(source, default_value)
 end
 
-function Base.start(iter::EnumerableDefaultIfEmpty{T,S}) where {T,S}
-    s = start(iter.source)
-    return s, done(iter.source, s) ? Nullable(true) : Nullable{Bool}()
-end
+function Base.iterate(iter::EnumerableDefaultIfEmpty{T,S}) where {T,S}
+    s = iterate(iter.source)
 
-function Base.next(iter::EnumerableDefaultIfEmpty{T,S}, state) where {T,S}
-    (s,status) = state
-
-    if isnull(status)
-        x = next(iter.source, s)
-        v = x[1]
-        s_new = x[2]
-        return v, (s_new, Nullable{Bool}())
-    elseif get(status)
-        return iter.default_value, (s, Nullable(false))
-    else !get(status)
-        error()
+    if s===nothing
+        return iter.default_value, nothing
+    else
+        return s
     end
 end
 
-function Base.done(iter::EnumerableDefaultIfEmpty{T,S}, state) where {T,S}
-    (s,status) = state
-    if isnull(status)
-        return done(iter.source, s)
+function Base.iterate(iter::EnumerableDefaultIfEmpty{T,S}, state) where {T,S}
+    if state===nothing
+        return nothing
     else
-        return !get(status)
+        return iterate(iter.source, state)
     end
 end

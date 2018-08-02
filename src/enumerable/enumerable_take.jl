@@ -9,27 +9,34 @@ function take(source::Enumerable, n::Integer)
     return EnumerableTake{T,S}(source, Int(n))
 end
 
-Base.iteratorsize(::Type{EnumerableTake{T,S}}) where {T,S} = Base.iteratorsize(S) in (Base.HasLength(), Base.HasShape()) ? Base.HasLength() : Base.SizeUnknown()
-
-Base.eltype(iter::EnumerableTake{T,S}) where {T,S} = T
+Base.IteratorSize(::Type{EnumerableTake{T,S}}) where {T,S} = (Base.IteratorSize(S) isa Base.HasLength || Base.IteratorSize(S) isa Base.HasShape) ? Base.HasLength() : Base.SizeUnknown()
 
 Base.eltype(::Type{EnumerableTake{T,S}}) where {T,S} = T
 
 Base.length(iter::EnumerableTake{T,S}) where {T,S} = min(length(iter.source),iter.n)
 
-function Base.start(iter::EnumerableTake{T,S}) where {T,S}
-    return iter.n, start(iter.source)
+function Base.iterate(iter::EnumerableTake{T,S}) where {T,S}
+    ret = iterate(iter.source)
+
+    if ret===nothing
+        return nothing
+    elseif iter.n==0
+        return nothing
+    else
+        return ret[1], (ret[2],1)
+    end
 end
 
-function Base.next(iter::EnumerableTake{T,S}, s) where {T,S}
-    n, source_state = s
-    x = next(iter.source, source_state)
-    v = x[1]
-    source_new = x[2]
-    return v, (n-1, source_new)
-end
+function Base.iterate(iter::EnumerableTake{T,S}, state) where {T,S}
+    if state[2]==iter.n
+        return nothing
+    else
+        ret = iterate(iter.source, state[1])
 
-function Base.done(iter::EnumerableTake{T,S}, state) where {T,S}
-    n, source_state = state
-    return n<=0 || done(iter.source, source_state)
+        if ret===nothing
+            return nothing
+        else
+            return ret[1], (ret[2], state[2]+1)
+        end
+    end
 end

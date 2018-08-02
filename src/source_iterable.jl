@@ -13,23 +13,13 @@ function query(source)
     return source_enumerable
 end
 
-Base.iteratorsize(::Type{EnumerableIterable{T,S}}) where {T,S} = Base.iteratorsize(S) == Base.HasShape() ? Base.HasLength() : Base.iteratorsize(S)
+Base.IteratorSize(::Type{EnumerableIterable{T,S}}) where {T,S} = Base.IteratorSize(S) isa Base.HasShape ? Base.HasLength() : Base.IteratorSize(S)
 
-Base.eltype(iter::EnumerableIterable{T,S}) where {T,S} = T
-
-Base.eltype(iter::Type{EnumerableIterable{T,S}}) where {T,S} = T
+Base.eltype(::Type{EnumerableIterable{T,S}}) where {T,S} = T
 
 Base.length(iter::EnumerableIterable{T,S}) where {T,S} = length(iter.source)
 
-function Base.start(iter::EnumerableIterable{T,S}) where {T,S}
-    return start(iter.source)
-end
-
-@inline function Base.next(iter::EnumerableIterable{T,S}, state) where {T,S}
-    return next(iter.source, state)
-end
-
-function Base.done(iter::EnumerableIterable{T,S}, state) where {T,S}
-    return done(iter.source, state)
+function Base.iterate(iter::EnumerableIterable{T,S}, state...) where {T,S}
+    return iterate(iter.source, state...)
 end
 

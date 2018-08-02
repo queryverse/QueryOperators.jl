@@ -1,7 +1,6 @@
 using QueryOperators
-using Base.Test
-using NamedTuples
 using DataValues
+using Test
 
 @testset "QueryOperators" begin
 
@@ -85,7 +84,7 @@ end
 @test collect(QueryOperators.default_if_empty(DataValue{Int}[], DataValue{Int}()))[1] == DataValue{Int}()
 
 # passing in a NamedTuple of DataValues
-nt = @NT(a=DataValue(2), b=DataValue("test"), c=DataValue(3))
+nt = (a=DataValue(2), b=DataValue("test"), c=DataValue(3))
 def = QueryOperators.default_if_empty(typeof(nt)[])
 @test typeof(collect(def)[1]) == typeof(nt)
 
@@ -125,7 +124,7 @@ many_map_desired = [(1,3), (1,4), (2,3), (2,4)]
 success = collect(QueryOperators.@mapmany(first, i->second, (x,y)->(x,y))) == many_map_desired
 @test success
 
-ntups = QueryOperators.query([@NT(a=1, b=2, c=3), @NT(a=4, b=5, c=6)])
+ntups = QueryOperators.query([(a=1, b=2, c=3), (a=4, b=5, c=6)])
 
 @test sprint(show, ntups) == """
 2x3 query result

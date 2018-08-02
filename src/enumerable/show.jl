@@ -1,6 +1,6 @@
 function printsequence(io::IO, source::Enumerable)
     T = eltype(source)
-    rows = Base.iteratorsize(source) == Base.HasLength() ? length(source) : "?"
+    rows = Base.IteratorSize(source) == Base.HasLength() ? length(source) : "?"
     
     print(io, "$(rows)-element query result")
 
@@ -13,7 +13,7 @@ function printsequence(io::IO, source::Enumerable)
         v, s = next(source, s)
         if i==max_element_to_show+1
             print(io, "... with ")
-            if Base.iteratorsize(source)!=Base.HasLength()
+            if Base.IteratorSize(source)!=Base.HasLength()
                 print(io, " more elements")
             else
                 extra_rows = length(source) - max_element_to_show
@@ -22,7 +22,7 @@ function printsequence(io::IO, source::Enumerable)
             break
         else
             print(io, " ")
-            showcompact(io, v)
+            show(IOContext(io, :compact => true), v)
         end
         i += 1
     end
