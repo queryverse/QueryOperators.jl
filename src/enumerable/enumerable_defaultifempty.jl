@@ -11,7 +11,7 @@ function default_if_empty(source::S) where {S}
     T = eltype(source)
 
     if T<:NamedTuple
-        default_value = T([i() for i in T.parameters]...)
+        default_value = T(i() for i in T.parameters)
     else
         default_value = T()
     end

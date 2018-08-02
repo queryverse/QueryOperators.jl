@@ -1,7 +1,10 @@
 using QueryOperators
+using NamedTuples
 using Base.Test
 using NamedTuples
 using DataValues
+
+struct Empty end
 
 @testset "QueryOperators" begin
 
@@ -145,5 +148,8 @@ a │ b │ c
 
 @test sprint((stream,data)->show(stream, "text/html", data), ntups) ==
     "<table><thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr></tbody></table>"
+
+source_2 = [@NT(a=Empty()), @NT(a=Empty())]
+@test QueryOperators.default_if_empty(source_2) == QueryOperators.EnumerableDefaultIfEmpty(source_2, @NT(a=Empty()))
 
 end
