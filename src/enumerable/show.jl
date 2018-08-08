@@ -7,10 +7,10 @@ function printsequence(io::IO, source::Enumerable)
     max_element_to_show = 10
 
     i = 1
-    s = start(source)
-    while !done(source,s)
+    foo = iterate(source)
+    while foo!==nothing
+        v, s = foo
         println(io)
-        v, s = next(source, s)
         if i==max_element_to_show+1
             print(io, "... with ")
             if Base.IteratorSize(source)!=Base.HasLength()
@@ -25,6 +25,8 @@ function printsequence(io::IO, source::Enumerable)
             show(IOContext(io, :compact => true), v)
         end
         i += 1
+
+        foo = iterate(source, s)
     end
 end
 
