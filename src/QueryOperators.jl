@@ -1,4 +1,3 @@
-__precompile__()
 module QueryOperators
 
 using DataStructures
@@ -24,6 +23,5 @@ include("enumerable/enumerable_drop.jl")
 include("enumerable/show.jl")
 
 include("source_iterable.jl")
-
 
 end # module
