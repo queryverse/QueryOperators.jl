@@ -46,6 +46,6 @@ function Base.show(io::IO, ::MIME"text/html", source::Enumerable)
     end    
 end
 
-function Base.Multimedia.mimewritable(::MIME"text/html", source::Enumerable)
+function Base.Multimedia.showable(::MIME"text/html", source::Enumerable)
     return eltype(source) <: NamedTuple
 end
