@@ -10,9 +10,11 @@ end
 
 key(g::Grouping) = getfield(g, :_key)
 
-function Base.getproperty(g::Grouping, name::Symbol)
-    s = QueryOperators.query(getfield(g, :elements))
-    return QueryOperators.@map(s, i->getfield(i,name))
+function Base.getproperty(g::Grouping{TKey,T}, name::Symbol) where {TKey,T}
+    a = getfield(g, :elements)
+    return Base.map(i->getfield(i, name), a)
+    # s = QueryOperators.query(getfield(g, :elements))
+    # return QueryOperators.@map(s, i->getfield(i,name))
 end
 
 Base.size(A::Grouping{TKey,T}) where {TKey,T} = size(getfield(A, :elements))
