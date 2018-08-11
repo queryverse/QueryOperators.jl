@@ -4,9 +4,7 @@ struct EnumerableMapMany{T,SO,CS<:Function,RS<:Function} <: Enumerable
     resultSelector::RS
 end
 
-Base.eltype(iter::EnumerableMapMany{T,SO,CS,RS}) where {T,SO,CS,RS} = T
-
-Base.eltype(iter::Type{EnumerableMapMany{T,SO,CS,RS}}) where {T,SO,CS,RS} = T
+Base.eltype(::Type{EnumerableMapMany{T,SO,CS,RS}}) where {T,SO,CS,RS} = T
 
 # TODO Make sure this is actually correct. We might have to be more selective,
 # i.e. only scan arguments for certain types of expression etc.
@@ -38,8 +36,8 @@ function mapmany(source::Enumerable, f_collectionSelector::Function, collectionS
     TS = eltype(source)
     # First detect whether the collectionSelector return value depends at all
     # on the value of the anonymous function argument
-    anon_var = collectionSelector.args[1]
-    body = collectionSelector.args[2].args[2]
+    anon_var = collectionSelector.head==:escape ? collectionSelector.args[1].args[1] : collectionSelector.args[1]
+    body = collectionSelector.head==:escape ? collectionSelector.args[1].args[2].args[2] : collectionSelector.args[2].args[2]
     crossJoin = !expr_contains_ref_to(body, anon_var)
 
     if crossJoin
@@ -61,25 +59,25 @@ function mapmany(source::Enumerable, f_collectionSelector::Function, collectionS
 end
 
 # TODO This should be changed to a lazy implementation
-function Base.start(iter::EnumerableMapMany{T,SO,CS,RS}) where {T,SO,CS,RS}
-    results = Array{T}(0)
+function Base.iterate(iter::EnumerableMapMany{T,SO,CS,RS}) where {T,SO,CS,RS}
+    results = Array{T}(undef, 0)
     for i in iter.source
         for j in iter.collectionSelector(i)
             push!(results,iter.resultSelector(i,j))
         end
     end
 
-    return results,1
+    if length(results)==0
+        return nothing
+    end
+
+    return results[1], (results,2)
 end
 
-function Base.next(iter::EnumerableMapMany{T,SO,CS,RS},state) where {T,SO,CS,RS}
-    results = state[1]
-    curr_index = state[2]
-    return results[curr_index], (results, curr_index+1)
-end
-
-function Base.done(iter::EnumerableMapMany{T,SO,CS,RS},state) where {T,SO,CS,RS}
-    results = state[1]
-    curr_index = state[2]
-    return curr_index > length(results)
+function Base.iterate(iter::EnumerableMapMany{T,SO,CS,RS}, state) where {T,SO,CS,RS}
+    if state[2]>length(state[1])
+        return nothing
+    else
+        return state[1][state[2]], (state[1], state[2]+1)
+    end
 end

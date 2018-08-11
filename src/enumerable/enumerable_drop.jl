@@ -9,30 +9,24 @@ function drop(source::Enumerable, n::Integer)
     return EnumerableDrop{T,S}(source, Int(n))
 end
 
-Base.iteratorsize(::Type{EnumerableDrop{T,S}}) where {T,S} = Base.iteratorsize(S) in (Base.HasLength(), Base.HasShape()) ? Base.HasLength() : Base.SizeUnknown()
-
-Base.eltype(iter::EnumerableDrop{T,S}) where {T,S} = T
+Base.IteratorSize(::Type{EnumerableDrop{T,S}}) where {T,S} = (Base.IteratorSize(S) isa Base.HasLength || Base.IteratorSize(S) isa Base.HasShape) ? Base.HasLength() : Base.SizeUnknown()
 
 Base.eltype(::Type{EnumerableDrop{T,S}}) where {T,S} = T
 
 Base.length(iter::EnumerableDrop{T,S}) where {T,S} = max(length(iter.source)-iter.n,0)
 
-function Base.start(iter::EnumerableDrop{T,S}) where {T,S}
-    source_state = start(iter.source)
+function Base.iterate(iter::EnumerableDrop{T,S}) where {T,S}
+    ret = iterate(iter.source)
     for i in 1:iter.n
-        if done(iter.source, source_state)
-            break
+        if ret===nothing
+            return nothing
+        else
+            ret = iterate(iter.source, ret[2])
         end
-
-        _, source_state = next(iter.source, source_state)
     end
-    return source_state
+    return ret
 end
 
-function Base.next(iter::EnumerableDrop{T,S}, s) where {T,S}
-    return next(iter.source, s)
-end
-
-function Base.done(iter::EnumerableDrop{T,S}, state) where {T,S}
-    return done(iter.source, state)
+function Base.iterate(iter::EnumerableDrop{T,S}, state) where {T,S}
+    return iterate(iter.source, state)
 end

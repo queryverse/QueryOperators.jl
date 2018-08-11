@@ -1,19 +1,19 @@
 function printsequence(io::IO, source::Enumerable)
     T = eltype(source)
-    rows = Base.iteratorsize(source) == Base.HasLength() ? length(source) : "?"
+    rows = Base.IteratorSize(source) == Base.HasLength() ? length(source) : "?"
     
     print(io, "$(rows)-element query result")
 
     max_element_to_show = 10
 
     i = 1
-    s = start(source)
-    while !done(source,s)
+    foo = iterate(source)
+    while foo!==nothing
+        v, s = foo
         println(io)
-        v, s = next(source, s)
         if i==max_element_to_show+1
             print(io, "... with ")
-            if Base.iteratorsize(source)!=Base.HasLength()
+            if Base.IteratorSize(source)!=Base.HasLength()
                 print(io, " more elements")
             else
                 extra_rows = length(source) - max_element_to_show
@@ -22,9 +22,11 @@ function printsequence(io::IO, source::Enumerable)
             break
         else
             print(io, " ")
-            showcompact(io, v)
+            show(IOContext(io, :compact => true), v)
         end
         i += 1
+
+        foo = iterate(source, s)
     end
 end
 
@@ -44,6 +46,6 @@ function Base.show(io::IO, ::MIME"text/html", source::Enumerable)
     end    
 end
 
-function Base.Multimedia.mimewritable(::MIME"text/html", source::Enumerable)
+function Base.Multimedia.showable(::MIME"text/html", source::Enumerable)
     return eltype(source) <: NamedTuple
 end

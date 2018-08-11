@@ -1,12 +1,10 @@
-__precompile__()
 module QueryOperators
 
 using DataStructures
-using NamedTuples
 using IteratorInterfaceExtensions
 using TableShowUtils
 
-export Grouping
+export Grouping, key
 
 include("operators.jl")
 
@@ -24,12 +22,6 @@ include("enumerable/enumerable_take.jl")
 include("enumerable/enumerable_drop.jl")
 include("enumerable/show.jl")
 
-include("queryable/queryable.jl")
-include("queryable/queryable_map.jl")
-include("queryable/queryable_filter.jl")
-include("queryable/sink_array.jl")
-
 include("source_iterable.jl")
-
 
 end # module

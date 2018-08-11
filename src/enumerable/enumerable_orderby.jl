@@ -4,11 +4,9 @@ struct EnumerableOrderby{T,S,KS<:Function,TKS} <: Enumerable
     descending::Bool
 end
 
-Base.iteratorsize(::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = Base.iteratorsize(S) in (Base.HasLength(), Base.HasShape()) ? Base.HasLength() : Base.iteratorsize(S)
+Base.IteratorSize(::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = (Base.IteratorSize(S) isa Base.HasLength || Base.IteratorSize(S) isa Base.HasShape) ? Base.HasLength() : Base.IteratorSize(S)
 
-Base.eltype(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS} = T
-
-Base.eltype(iter::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = T
+Base.eltype(::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = T
 
 Base.length(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS} = length(iter.source)
 
@@ -30,12 +28,12 @@ function orderby_descending(source::Enumerable, f::Function, f_expr::Expr)
     return EnumerableOrderby{T,typeof(source),KS,TKS}(source, f, true)
 end
 
-function Base.start(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS}
-    rows = Base.iteratorsize(typeof(iter)) in (Base.HasLength(), Base.HasShape()) ? length(iter) : 0
+function Base.iterate(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS}
+    rows = (Base.IteratorSize(typeof(iter)) isa Base.HasLength || Base.IteratorSize(typeof(iter)) isa Base.HasShape) ? length(iter) : 0
 
-    elements = Array{T}(rows)
+    elements = Array{T}(undef, rows)
 
-    if Base.iteratorsize(typeof(iter)) in (Base.HasLength(), Base.HasShape())
+    if Base.IteratorSize(typeof(iter)) isa Base.HasLength || Base.IteratorSize(typeof(iter)) isa Base.HasShape
         for i in enumerate(iter.source)
             elements[i[1]] = i[2]
         end
@@ -45,18 +43,22 @@ function Base.start(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS}
         end
     end
 
+    if length(elements)==0
+        return nothing
+    end
+
     sort!(elements, by=iter.keySelector, rev=iter.descending)
 
-    return elements, 1
+    return elements[1], (elements, 2)
 end
 
-function Base.next(iter::EnumerableOrderby{T,S,KS,TKS}, state) where {T,S,KS,TKS}
-    elements = state[1]
-    i = state[2]
-    return elements[i], (elements, i+1)
+function Base.iterate(iter::EnumerableOrderby{T,S,KS,TKS}, state) where {T,S,KS,TKS}
+    if state[2]>length(state[1])
+        return nothing
+    else
+        return state[1][state[2]], (state[1], state[2]+1)
+    end
 end
-
-Base.done(f::EnumerableOrderby{T,S,KS,TKS}, state) where {T,S,KS,TKS} = state[2] > length(state[1])
 
 struct EnumerableThenBy{T,S,KS<:Function,TKS} <: Enumerable
     source::S
@@ -64,9 +66,7 @@ struct EnumerableThenBy{T,S,KS<:Function,TKS} <: Enumerable
     descending::Bool
 end
 
-Base.eltype(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS} = T
-
-Base.eltype(iter::Type{EnumerableThenBy{T,S,KS,TKS}}) where {T,S,KS,TKS} = T
+Base.eltype(::Type{EnumerableThenBy{T,S,KS,TKS}}) where {T,S,KS,TKS} = T
 
 Base.length(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS} = length(iter.source)
 
@@ -84,8 +84,7 @@ function thenby_descending(source::Enumerable, f::Function, f_expr::Expr)
     return EnumerableThenBy{T,typeof(source),KS,TKS}(source, f, true)
 end
 
-# TODO This should be changed to a lazy implementation
-function Base.start(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS}
+function Base.iterate(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS}
     # Find start of ordering sequence
     source = iter.source
     keySelectors = [source.keySelector,iter.keySelector]
@@ -109,11 +108,11 @@ function Base.start(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS}
         return n1 < n2
     end
 
-    rows = Base.iteratorsize(typeof(iter)) in (Base.HasLength(), Base.HasShape()) ? length(iter) : 0
+    rows = (Base.IteratorSize(typeof(iter)) isa Base.HasLength || Base.IteratorSize(typeof(iter)) isa Base.HasShape) ? length(iter) : 0
 
-    elements = Array{T}(rows)
+    elements = Array{T}(undef, rows)
 
-    if Base.iteratorsize(typeof(iter)) in (Base.HasLength(), Base.HasShape())
+    if (Base.IteratorSize(typeof(iter)) isa Base.HasLength || Base.IteratorSize(typeof(iter)) isa Base.HasShape)
         for i in enumerate(iter.source)
             elements[i[1]] = i[2]
         end        
@@ -123,15 +122,19 @@ function Base.start(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS}
         end
     end
 
+    if length(elements)==0
+        return nothing
+    end
+
     sort!(elements, by=keySelector, lt=lt)
 
-    return elements, 1
+    return elements[1], (elements, 2)
 end
 
-function Base.next(iter::EnumerableThenBy{T,S,KS,TKS}, state) where {T,S,KS,TKS}
-    elements = state[1]
-    i = state[2]
-    return elements[i], (elements, i+1)
+function Base.iterate(iter::EnumerableThenBy{T,S,KS,TKS}, state) where {T,S,KS,TKS}
+    if state[2]>length(state[1])
+        return nothing
+    else
+        return state[1][state[2]], (state[1], state[2]+1)
+    end
 end
-
-Base.done(f::EnumerableThenBy{T,S,KS,TKS}, state) where {T,S,KS,TKS} = state[2] > length(state[1])
