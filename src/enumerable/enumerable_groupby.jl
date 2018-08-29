@@ -10,11 +10,23 @@ end
 
 key(g::Grouping) = getfield(g, :_key)
 
+struct GroupColumnArrayView{T,G,INDEX} <: AbstractVector{T}
+    grouping::G
+end
+
+function Base.size(gcav::GroupColumnArrayView)
+    return size(gcav.grouping)
+end
+
+function Base.getindex(gcav::GroupColumnArrayView{T,G,INDEX}, i::Int) where {T,G,INDEX}
+    return getproperty(gcav.grouping[i],INDEX)
+end
+
+Base.IndexStyle(::Type{GroupColumnArrayView}) = IndexLinear()
+
 function Base.getproperty(g::Grouping{TKey,T}, name::Symbol) where {TKey,T}
-    a = getfield(g, :elements)
-    return Base.map(i->getfield(i, name), a)
-    # s = QueryOperators.query(getfield(g, :elements))
-    # return QueryOperators.@map(s, i->getfield(i,name))
+    
+    return GroupColumnArrayView{fieldtype(T,name),Grouping{TKey,T},name}(g)
 end
 
 Base.size(A::Grouping{TKey,T}) where {TKey,T} = size(getfield(A, :elements))
