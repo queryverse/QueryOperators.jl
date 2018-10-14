@@ -19,6 +19,9 @@ function orderby(source::Enumerable, f::Function, f_expr::Expr)
     return EnumerableOrderby{T,typeof(source), KS,TKS}(source, f, false)
 end
 
+orderby(source::Enumerable, f_tuple::Tuple{Function, Expr}) =
+    orderby(source, f_tuple...)
+
 function orderby_descending(source::Enumerable, f::Function, f_expr::Expr)
     T = eltype(source)
     TKS = Base._return_type(f, Tuple{T,})
@@ -27,6 +30,9 @@ function orderby_descending(source::Enumerable, f::Function, f_expr::Expr)
 
     return EnumerableOrderby{T,typeof(source),KS,TKS}(source, f, true)
 end
+
+orderby_descending(source::Enumerable, f_tuple::Tuple{Function, Expr}) =
+    orderby_descending(source, f_tuple...)
 
 function Base.iterate(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS}
     rows = (Base.IteratorSize(typeof(iter)) isa Base.HasLength || Base.IteratorSize(typeof(iter)) isa Base.HasShape) ? length(iter) : 0
@@ -77,12 +83,18 @@ function thenby(source::Enumerable, f::Function, f_expr::Expr)
     return EnumerableThenBy{T,typeof(source),KS,TKS}(source, f, false)
 end
 
+thenby(source::Enumerable, f_tuple::Tuple{Function, Expr}) =
+    thenby(source, f_tuple...)
+
 function thenby_descending(source::Enumerable, f::Function, f_expr::Expr)
     T = eltype(source)
     TKS = Base._return_type(f, Tuple{T,})
     KS = typeof(f)
     return EnumerableThenBy{T,typeof(source),KS,TKS}(source, f, true)
 end
+
+thenby_descending(source::Enumerable, f_tuple::Tuple{Function, Expr}) =
+    thenby_descending(source, f_tuple...)
 
 function Base.iterate(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS}
     # Find start of ordering sequence
@@ -115,7 +127,7 @@ function Base.iterate(iter::EnumerableThenBy{T,S,KS,TKS}) where {T,S,KS,TKS}
     if (Base.IteratorSize(typeof(iter)) isa Base.HasLength || Base.IteratorSize(typeof(iter)) isa Base.HasShape)
         for i in enumerate(iter.source)
             elements[i[1]] = i[2]
-        end        
+        end
     else
         for i in iter.source
             push!(elements, i)

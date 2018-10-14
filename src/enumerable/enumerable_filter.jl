@@ -13,6 +13,9 @@ function filter(source::Enumerable, filter_func::Function, filter_expr::Expr)
     return EnumerableFilter{T,S,Q}(source, filter_func)
 end
 
+filter(source::Enumerable, filter_tuple::Tuple{Function, Expr}) =
+    filter(source, filter_tuple...)
+
 function Base.iterate(iter::EnumerableFilter{T,S,Q}, state...) where {T,S,Q}
     ret = iterate(iter.source, state...)
 

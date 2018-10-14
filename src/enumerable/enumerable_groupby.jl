@@ -25,7 +25,7 @@ end
 Base.IndexStyle(::Type{GroupColumnArrayView}) = IndexLinear()
 
 function Base.getproperty(g::Grouping{TKey,T}, name::Symbol) where {TKey,T}
-    
+
     return GroupColumnArrayView{fieldtype(T,name),Grouping{TKey,T},name}(g)
 end
 
@@ -97,6 +97,9 @@ function groupby(source::Enumerable, f_elementSelector::Function, elementSelecto
 
     return EnumerableGroupBy{T,TKey,TR,SO,ES,RS}(source,f_elementSelector,f_resultSelector)
 end
+
+groupby(source::Enumerable, element_tuple::Tuple{Function, Expr}, result_tuple::Tuple{Function, Expr}) =
+    groupby(source, element_tuple..., result_tuple...)
 
 function Base.iterate(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}) where {T,TKey,TR,SO,ES}
     result = OrderedDict{TKey,T}()

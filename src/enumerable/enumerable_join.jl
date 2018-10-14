@@ -30,6 +30,9 @@ function join(outer::Enumerable, inner::Enumerable, f_outerKeySelector::Function
     return EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(outer,inner,f_outerKeySelector,f_innerKeySelector,f_resultSelector)
 end
 
+join(outer::Enumerable, inner::Enumerable, outer_tuple::Tuple{Function, Expr}, inner_tuple::Tuple{Function, Expr}, result_tuple::Tuple{Function, Expr}) =
+    join(outer, inner, outer_tuple..., inner_tuple..., result_tuple...)
+
 function Base.iterate(iter::EnumerableJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
     results = Array{T}(undef, 0)
 
