@@ -58,6 +58,9 @@ function mapmany(source::Enumerable, f_collectionSelector::Function, collectionS
     return EnumerableMapMany{T,SO,CS,RS}(source,f_collectionSelector,f_resultSelector)
 end
 
+mapmany(source::Enumerable, collection_tuple::Tuple{Function, Expr}, result_tuple::Tuple{Function, Expr}) =
+    map(source, collection_tuple..., result_tuple...)
+
 # TODO This should be changed to a lazy implementation
 function Base.iterate(iter::EnumerableMapMany{T,SO,CS,RS}) where {T,SO,CS,RS}
     results = Array{T}(undef, 0)

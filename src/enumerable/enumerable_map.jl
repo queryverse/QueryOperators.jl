@@ -17,6 +17,9 @@ function map(source::Enumerable, f::Function, f_expr::Expr)
     return EnumerableMap{T,S,Q}(source, f)
 end
 
+map(source::Enumerable, f_tuple::Tuple{Function, Expr}) =
+    map(source, f_tuple...)
+
 function Base.iterate(iter::EnumerableMap{T,S,Q}, state...) where {T,S,Q}
     ret = iterate(iter.source, state...)
     if ret===nothing
