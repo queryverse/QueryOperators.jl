@@ -7,6 +7,7 @@ using TableShowUtils
 export Grouping, key
 
 include("operators.jl")
+include("NamedTupleUtilities.jl")
 
 include("enumerable/enumerable.jl")
 include("enumerable/enumerable_groupby.jl")
