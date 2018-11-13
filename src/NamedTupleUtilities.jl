@@ -1,5 +1,18 @@
-module NamedTupleUtilities
-export remove, rename
+"""
+    select(a::NamedTuple, v::Val{n})
+Select a field `n` from `a` if it is in `a`.
+```jldoctest
+julia> select((a=1,b=2,c=3),Val(:a))
+(a = 1,)
+```
+"""
+@generated function select(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+    names = ((i for i in an if i == bn)...,)
+    types = Tuple{(fieldtype(a, n) for n in names)...}
+    vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
+    return :(NamedTuple{$names,$types}(($(vals...),)))
+end
+
 """
     remove(a::NamedTuple, v::Val{n})
 Remove a field `n` from the `a` if it is in `a`.
@@ -121,5 +134,3 @@ julia> occursin((abc=1,bcd=2,cde=3),Val(:d))
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
-
-end # module
