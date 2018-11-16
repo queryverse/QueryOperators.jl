@@ -1,3 +1,5 @@
+module NamedTupleUtilities
+
 """
     select(a::NamedTuple, v::Val{n})
 Select a field `n` from `a` if it is in `a`.
@@ -38,7 +40,7 @@ julia> range((a=1,b=2,c=3),Val(:a),Val(:b))
 (a = 1, b = 2)
 ```
 """
-@generated function Base.range(a::NamedTuple{an}, ::Val{bn}, ::Val{cn}) where {an, bn, cn}
+@generated function range(a::NamedTuple{an}, ::Val{bn}, ::Val{cn}) where {an, bn, cn}
     rangeStarted = false
     names = Symbol[]
     for n in an

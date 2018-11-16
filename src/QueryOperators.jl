@@ -5,7 +5,6 @@ using IteratorInterfaceExtensions
 using TableShowUtils
 
 export Grouping, key
-export select, remove, rename
 
 include("operators.jl")
 include("NamedTupleUtilities.jl")
