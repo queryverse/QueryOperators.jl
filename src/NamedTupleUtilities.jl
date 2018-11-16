@@ -136,3 +136,5 @@ julia> occursin((abc=1,bcd=2,cde=3),Val(:d))
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
+
+end
