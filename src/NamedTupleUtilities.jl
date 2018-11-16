@@ -100,7 +100,7 @@ julia> startswith((abc=1,bcd=2,cde=3),Val(:a))
 (abc = 1,)
 ```
 """
-@generated function Base.startswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function startswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if startswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a ,n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -115,7 +115,7 @@ julia> endswith((abc=1,bcd=2,cde=3),Val(:d))
 (bcd = 2,)
 ```
 """
-@generated function Base.endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if endswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a ,n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -130,7 +130,7 @@ julia> occursin((abc=1,bcd=2,cde=3),Val(:d))
 (bcd = 2, cde = 3)
 ```
 """
-@generated function Base.occursin(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function occursin(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if occursin(String(bn), String(i)))...,)
     types = Tuple{(fieldtype(a ,n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
