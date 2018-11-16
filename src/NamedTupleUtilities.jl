@@ -1,5 +1,7 @@
 module NamedTupleUtilities
 
+import Base.startswith, Base.endswith, Base.occursin
+
 """
     select(a::NamedTuple, v::Val{n})
 Select a field `n` from `a` if it is in `a`.
