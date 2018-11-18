@@ -4,6 +4,8 @@ using Test
 
 @testset "QueryOperators" begin
 
+@testset "Core" begin
+
 source_1 = [1,2,2,3,4]
 enum = QueryOperators.query(source_1)
 
@@ -144,5 +146,9 @@ a │ b │ c
 
 @test sprint((stream,data)->show(stream, "text/html", data), ntups) ==
     "<table><thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr></tbody></table>"
+
+end
+
+include("test_namedtupleutilities.jl")
 
 end
