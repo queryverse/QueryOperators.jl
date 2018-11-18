@@ -1,7 +1,5 @@
 module NamedTupleUtilities
 
-import Base.startswith, Base.endswith, Base.occursin
-
 """
     select(a::NamedTuple, v::Val{n})
 Select a field `n` from `a` if it is in `a`.
@@ -103,7 +101,7 @@ julia> startswith((abc=1,bcd=2,cde=3),Val(:a))
 ```
 """
 @generated function startswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
-    names = ((i for i in an if startswith(String(i), String(bn)))...,)
+    names = ((i for i in an if Base.startswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a ,n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
@@ -118,7 +116,7 @@ julia> endswith((abc=1,bcd=2,cde=3),Val(:d))
 ```
 """
 @generated function endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
-    names = ((i for i in an if endswith(String(i), String(bn)))...,)
+    names = ((i for i in an if Base.endswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a ,n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
@@ -133,7 +131,7 @@ julia> occursin((abc=1,bcd=2,cde=3),Val(:d))
 ```
 """
 @generated function occursin(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
-    names = ((i for i in an if occursin(String(bn), String(i)))...,)
+    names = ((i for i in an if Base.occursin(String(bn), String(i)))...,)
     types = Tuple{(fieldtype(a ,n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
