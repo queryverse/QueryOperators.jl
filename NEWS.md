@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.5.0 Release Notes
+* Add NamedTupleUtilities
+
 # QueryOperators.jl v0.4.0 Release Notes
 * Add GroupColumnArrayView
 
