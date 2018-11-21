@@ -6,6 +6,10 @@ struct EnumerableGather{T,S,F,I} <: Enumerable
     value::Symbol
 end
 
+struct Not{T}
+    val::T
+end
+
 function gather(source::Enumerable, args...; key::Symbol = :key, value::Symbol = :value)
     T = eltype(source)
     fields = fieldnames(T)
@@ -16,15 +20,11 @@ function gather(source::Enumerable, args...; key::Symbol = :key, value::Symbol =
         for arg in args
             if typeof(arg) == Symbol
                 prev = (prev..., arg)
-            else
-                arg = string(arg)
-                m1 = match(r"^-:(.+)", arg)
-                if m1 !== nothing
-                    if firstArg
-                        prev = (a for a in fields if a != Symbol(m1[1]))
-                    else
-                        prev = (a for a in prev if a != Symbol(m1[1]))
-                    end
+            else typeof(arg) == Not{Symbol}
+                if firstArg
+                    prev = (a for a in fields if a != arg.val)
+                else
+                    prev = (a for a in prev if a != arg.val)
                 end
             end
             firstArg = false
