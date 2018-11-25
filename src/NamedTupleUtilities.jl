@@ -60,25 +60,27 @@ julia> range((a=1,b=2,c=3),Val(:a),Val(:b))
     return :( NamedTuple{$(names...,),$types}(($(vals...),)) )
 end
 
-# @generated function range(a::NamedTuple{an}, b::Int64, c::Int64) where {an}
-#     rangeStarted = false
-#     names = Symbol[]
-#     for i in 1:length(a)
-#         if i == b
-#             rangeStarted = true
-#         end
-#         if rangeStarted
-#             push!(names, an[i])
-#         end
-#         if i == c
-#             rangeStarted = false
-#             break
-#         end
-#     end
-#     types = Tuple{(fieldtype(a, n) for n in names)...}
-#     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
-#     return :( NamedTuple{$(names...,),$types}(($(vals...),)) )
-# end
+@generated function range(a::NamedTuple{an}, b::Int, c::Int) where {an}
+    rangeStarted = false
+    names = Symbol[]
+    count = 1
+    for n in an
+        if count == b
+            rangeStarted = true
+        end
+        if rangeStarted
+            push!(names, n)
+        end
+        if count == c
+            rangeStarted = false
+            break
+        end
+        count += 1
+    end
+    types = Tuple{(fieldtype(a, n) for n in names)...}
+    vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
+    return :( NamedTuple{$(names...,),$types}(($(vals...),)) )
+end
 
 """
     rename(a::NamedTuple, b::Val{n}, c::Val{n})
