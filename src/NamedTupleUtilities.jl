@@ -25,7 +25,7 @@ julia> remove((a=1,b=2,c=3),Val(:c))
 """
 @generated function remove(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if i != bn)...,)
-    types = Tuple{(fieldtype(a ,n) for n in names)...}
+    types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
@@ -51,14 +51,34 @@ julia> range((a=1,b=2,c=3),Val(:a),Val(:b))
             push!(names, n)
         end
         if n == cn
-            rangeStarted = false
+            # rangeStarted = false
             break
         end
     end
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
-    return :(NamedTuple{$(names...,),$types}(($(vals...),)))
+    return :( NamedTuple{$(names...,),$types}(($(vals...),)) )
 end
+
+# @generated function range(a::NamedTuple{an}, b::Int64, c::Int64) where {an}
+#     rangeStarted = false
+#     names = Symbol[]
+#     for i in 1:length(a)
+#         if i == b
+#             rangeStarted = true
+#         end
+#         if rangeStarted
+#             push!(names, an[i])
+#         end
+#         if i == c
+#             rangeStarted = false
+#             break
+#         end
+#     end
+#     types = Tuple{(fieldtype(a, n) for n in names)...}
+#     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
+#     return :( NamedTuple{$(names...,),$types}(($(vals...),)) )
+# end
 
 """
     rename(a::NamedTuple, b::Val{n}, c::Val{n})
@@ -91,7 +111,6 @@ ERROR: duplicate field name in NamedTuple: "c" is not unique
     return :(NamedTuple{$(names...,),$types}(($(vals...),)))
 end
 
-
 """
     startswith(a::NamedTuple, b::Val{n})
 Return a NamedTuple which retains the fields with names started with `b` in `a`. 
@@ -102,7 +121,14 @@ julia> startswith((abc=1,bcd=2,cde=3),Val(:a))
 """
 @generated function startswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if Base.startswith(String(i), String(bn)))...,)
-    types = Tuple{(fieldtype(a ,n) for n in names)...}
+    types = Tuple{(fieldtype(a, n) for n in names)...}
+    vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
+    return :(NamedTuple{$names,$types}(($(vals...),)))
+end
+
+@generated function not_startswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+    names = ((i for i in an if !Base.startswith(String(i), String(bn)))...,)
+    types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
@@ -117,7 +143,14 @@ julia> endswith((abc=1,bcd=2,cde=3),Val(:d))
 """
 @generated function endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if Base.endswith(String(i), String(bn)))...,)
-    types = Tuple{(fieldtype(a ,n) for n in names)...}
+    types = Tuple{(fieldtype(a, n) for n in names)...}
+    vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
+    return :(NamedTuple{$names,$types}(($(vals...),)))
+end
+
+@generated function not_endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+    names = ((i for i in an if !Base.endswith(String(i), String(bn)))...,)
+    types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
@@ -132,7 +165,14 @@ julia> occursin((abc=1,bcd=2,cde=3),Val(:d))
 """
 @generated function occursin(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if Base.occursin(String(bn), String(i)))...,)
-    types = Tuple{(fieldtype(a ,n) for n in names)...}
+    types = Tuple{(fieldtype(a, n) for n in names)...}
+    vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
+    return :(NamedTuple{$names,$types}(($(vals...),)))
+end
+
+@generated function not_occursin(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+    names = ((i for i in an if !Base.occursin(String(bn), String(i)))...,)
+    types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
