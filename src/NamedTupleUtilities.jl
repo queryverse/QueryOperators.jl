@@ -4,7 +4,7 @@ module NamedTupleUtilities
     select(a::NamedTuple, v::Val{n})
 Select a field `n` from `a` if it is in `a`.
 ```jldoctest
-julia> select((a=1,b=2,c=3),Val(:a))
+julia> QueryOperators.NamedTupleUtilities.select((a=1,b=2,c=3),Val(:a))
 (a = 1,)
 ```
 """
@@ -19,7 +19,7 @@ end
     remove(a::NamedTuple, v::Val{n})
 Remove a field `n` from the `a` if it is in `a`.
 ```jldoctest
-julia> remove((a=1,b=2,c=3),Val(:c))
+julia> QueryOperators.NamedTupleUtilities.remove((a=1,b=2,c=3),Val(:c))
 (a = 1, b = 2)
 ```
 """
@@ -33,10 +33,10 @@ end
 """
     range(a::NamedTuple, b::Val{n}, c::Val{n})
 Return a NamedTuple which retains the fields from `b` to `c` in `a`. 
-If `b` is not in `a`, then it will return empty NamedTuple. 
-If `c` is not in `a`, then it will return everything started with `b`.
+If `b` is not in `a`, then it will return the empty NamedTuple. 
+If `c` is not in `a`, then it will return everything starting with `b`.
 ```jldoctest
-julia> range((a=1,b=2,c=3),Val(:a),Val(:b))
+julia> QueryOperators.NamedTupleUtilities.range((a=1,b=2,c=3),Val(:a),Val(:b))
 (a = 1, b = 2)
 ```
 """
@@ -60,6 +60,15 @@ julia> range((a=1,b=2,c=3),Val(:a),Val(:b))
     return :( NamedTuple{$(names...,),$types}(($(vals...),)) )
 end
 
+"""
+    range(a::NamedTuple, b::Val{n}, c::Val{n})
+Return a NamedTuple which retains `b`th to `c`th fields in `a`. 
+If `b` is greater than or equal to `c`, then it will return the empty NamedTuple.
+```jldoctest
+julia> QueryOperators.NamedTupleUtilities.range((a=1,b=2,c=3),1,2)
+(a = 1, b = 2)
+```
+"""
 @generated function range(a::NamedTuple{an}, b::Int, c::Int) where {an}
     rangeStarted = false
     names = Symbol[]
@@ -88,11 +97,11 @@ Return a NamedTuple derived from `a` in which the the field from `b` is renamed 
 If `b` is not in `a`, then it will return the original NamedTuple. 
 If `c` is in `a`, then `ERROR: duplicate field name in NamedTuple: "c" is not unique` will occur.
 ```jldoctest
-julia> rename((a = 1, b = 2, c = 3),Val(:a),Val(:d))
+julia> QueryOperators.NamedTupleUtilities.rename((a = 1, b = 2, c = 3),Val(:a),Val(:d))
 (d = 1, b = 2, c = 3)
-julia> rename((a = 1, b = 2, c = 3),Val(:m),Val(:d))
+julia> QueryOperators.NamedTupleUtilities.rename((a = 1, b = 2, c = 3),Val(:m),Val(:d))
 (a = 1, b = 2, c = 3)
-julia> rename((a = 1, b = 2, c = 3),Val(:a),Val(:c))
+julia> QueryOperators.NamedTupleUtilities.rename((a = 1, b = 2, c = 3),Val(:a),Val(:c))
 ERROR: duplicate field name in NamedTuple: "c" is not unique
 ```
 """
@@ -115,9 +124,9 @@ end
 
 """
     startswith(a::NamedTuple, b::Val{n})
-Return a NamedTuple which retains the fields with names started with `b` in `a`. 
+Return a NamedTuple which retains the fields with names starting with `b` in `a`. 
 ```jldoctest
-julia> startswith((abc=1,bcd=2,cde=3),Val(:a))
+julia> QueryOperators.NamedTupleUtilities.startswith((abc=1,bcd=2,cde=3),Val(:a))
 (abc = 1,)
 ```
 """
@@ -128,6 +137,14 @@ julia> startswith((abc=1,bcd=2,cde=3),Val(:a))
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
 
+"""
+    startswith(a::NamedTuple, b::Val{n})
+Return a NamedTuple which retains the fields with names that do not start with `b` in `a`. 
+```jldoctest
+julia> QueryOperators.NamedTupleUtilities.not_startswith((abc=1,bcd=2,cde=3),Val(:a))
+(bcd = 2, cde = 3)
+```
+"""
 @generated function not_startswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if !Base.startswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
@@ -137,9 +154,9 @@ end
 
 """
     endswith(a::NamedTuple, b::Val{n})
-Return a NamedTuple which retains the fields with names ended with `b` in `a`. 
+Return a NamedTuple which retains the fields with names ending with `b` in `a`. 
 ```jldoctest
-julia> endswith((abc=1,bcd=2,cde=3),Val(:d))
+julia> QueryOperators.NamedTupleUtilities.endswith((abc=1,bcd=2,cde=3),Val(:d))
 (bcd = 2,)
 ```
 """
@@ -150,6 +167,14 @@ julia> endswith((abc=1,bcd=2,cde=3),Val(:d))
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
 
+"""
+    endswith(a::NamedTuple, b::Val{n})
+Return a NamedTuple which retains the fields with names that do not end with `b` in `a`. 
+```jldoctest
+julia> QueryOperators.NamedTupleUtilities.not_endswith((abc=1,bcd=2,cde=3),Val(:d))
+(abc = 1, cde = 3)
+```
+"""
 @generated function not_endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if !Base.endswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
@@ -159,9 +184,9 @@ end
 
 """
     occursin(a::NamedTuple, b::Val{n})
-Return a NamedTuple which retains the fields with names contains `b` as a substring. 
+Return a NamedTuple which retains the fields with names containing `b` as a substring. 
 ```jldoctest
-julia> occursin((abc=1,bcd=2,cde=3),Val(:d))
+julia> QueryOperators.NamedTupleUtilities.occursin((abc=1,bcd=2,cde=3),Val(:d))
 (bcd = 2, cde = 3)
 ```
 """
@@ -172,6 +197,14 @@ julia> occursin((abc=1,bcd=2,cde=3),Val(:d))
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
 
+"""
+    not_occursin(a::NamedTuple, b::Val{n})
+Return a NamedTuple which retains the fields without names containing `b` as a substring. 
+```jldoctest
+julia> QueryOperators.NamedTupleUtilities.not_occursin((abc=1,bcd=2,cde=3),Val(:d))
+(abc = 1,)
+```
+"""
 @generated function not_occursin(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
     names = ((i for i in an if !Base.occursin(String(bn), String(i)))...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
