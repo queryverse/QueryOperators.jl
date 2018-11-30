@@ -179,4 +179,19 @@ end
     return :(NamedTuple{$names,$types}(($(vals...),)))
 end
 
+"""
+    oftype(a::NamedTuple, b::DataType)
+Returns a NamedTuple which retains the fields whose elements have type `b`.
+```jldoctest
+julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c = ["He","llo","World!"]), Int64)
+(a = [4, 5, 6],)
+```
+"""
+@generated function oftype(a::NamedTuple{an}, b::DataType) where {an}
+    names = ((i for i in an if Type{eltype(fieldtype(a, i))} == b)...,)
+    types = Tuple{(fieldtype(a, n) for n in names)...}
+    vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
+    return :(NamedTuple{$names,$types}(($(vals...),)))
+end
+
 end
