@@ -188,7 +188,7 @@ julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c
 ```
 """
 @generated function oftype(a::NamedTuple{an}, b::DataType) where {an}
-    names = ((i for i in an if Type{eltype(fieldtype(a, i))} == b)...,)
+    names = ((i for i in an if eltype(fieldtype(a, i)) isa b)...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
