@@ -63,3 +63,13 @@ function Base.iterate(iter::EnumerableGather{T, S, F, I}, state) where {T, S, F,
         return state[1][state[2]], (state[1], state[2]+1)
     end
 end
+
+function Base.eltype(iter::EnumerableGather{T, S, F, I}) where {T, S, F, I}
+    if length(iter.indexFields) == 0
+        return nothing
+    end
+    savedFields = (n for n in iter.fields if !(n in iter.indexFields))
+    firstRow = iterate(iter.source)[1]
+    firstIndex = iter.indexFields[1]
+    return NamedTuple{(iter.key, iter.value, savedFields...), typeof(((firstIndex, firstRow[firstIndex], Base.map(n->firstRow[n], savedFields)...)))}
+end
