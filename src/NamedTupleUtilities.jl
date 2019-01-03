@@ -51,40 +51,9 @@ julia> QueryOperators.NamedTupleUtilities.range((a=1,b=2,c=3),Val(:a),Val(:b))
             push!(names, n)
         end
         if n == cn
-            # rangeStarted = false
-            break
-        end
-    end
-    types = Tuple{(fieldtype(a, n) for n in names)...}
-    vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
-    return :( NamedTuple{$(names...,),$types}(($(vals...),)) )
-end
-
-"""
-    range(a::NamedTuple, b::Val{n}, c::Val{n})
-Return a NamedTuple which retains `b`th to `c`th fields in `a`. 
-If `b` is greater than or equal to `c`, then it will return the empty NamedTuple.
-```jldoctest
-julia> QueryOperators.NamedTupleUtilities.range((a=1,b=2,c=3),1,2)
-(a = 1, b = 2)
-```
-"""
-@generated function range(a::NamedTuple{an}, b::Int, c::Int) where {an}
-    rangeStarted = false
-    names = Symbol[]
-    count = 1
-    for n in an
-        if count == b
-            rangeStarted = true
-        end
-        if rangeStarted
-            push!(names, n)
-        end
-        if count == c
             rangeStarted = false
             break
         end
-        count += 1
     end
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -138,7 +107,7 @@ julia> QueryOperators.NamedTupleUtilities.startswith((abc=1,bcd=2,cde=3),Val(:a)
 end
 
 """
-    startswith(a::NamedTuple, b::Val{n})
+    not_startswith(a::NamedTuple, b::Val{n})
 Return a NamedTuple which retains the fields with names that do not start with `b` in `a`. 
 ```jldoctest
 julia> QueryOperators.NamedTupleUtilities.not_startswith((abc=1,bcd=2,cde=3),Val(:a))
@@ -153,7 +122,7 @@ julia> QueryOperators.NamedTupleUtilities.not_startswith((abc=1,bcd=2,cde=3),Val
 end
 
 """
-    endswith(a::NamedTuple, b::Val{n})
+    not_endswith(a::NamedTuple, b::Val{n})
 Return a NamedTuple which retains the fields with names ending with `b` in `a`. 
 ```jldoctest
 julia> QueryOperators.NamedTupleUtilities.endswith((abc=1,bcd=2,cde=3),Val(:d))
@@ -216,12 +185,16 @@ end
     oftype(a::NamedTuple, b::DataType)
 Returns a NamedTuple which retains the fields whose elements have type `b`.
 ```jldoctest
-julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c = ["He","llo","World!"]), Int64)
+julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c = ["He","llo","World!"]), Val(Int64))
 (a = [4, 5, 6],)
+julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c = ["He","llo","World!"]), Val(Number))
+(a = [4, 5, 6], b = [3., 2., 1.])
+julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c = ["He","llo","World!"]), Val(Float32))
+NamedTuple()
 ```
 """
-@generated function oftype(a::NamedTuple{an}, b::DataType) where {an}
-    names = ((i for i in an if eltype(fieldtype(a, i)) isa b)...,)
+@generated function oftype(a::NamedTuple{an}, ::Val{b}) where {an, b}
+    names = ((i for i in an if eltype(fieldtype(a, i)) <: b)...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
