@@ -3,6 +3,7 @@ module QueryOperators
 using DataStructures
 using IteratorInterfaceExtensions
 using TableShowUtils
+import DataValues
 
 export Grouping, key
 
