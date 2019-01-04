@@ -1,3 +1,7 @@
+# QueryOperators.jl v0.5.2 Release Notes
+* Various bug fixes
+* Some new features for NamedTupleUtilities
+
 # QueryOperators.jl v0.5.1 Release Notes
 * Various bug fixes
 
