@@ -122,11 +122,11 @@ julia> QueryOperators.NamedTupleUtilities.not_startswith((abc=1,bcd=2,cde=3),Val
 end
 
 """
-    not_endswith(a::NamedTuple, b::Val{n})
-Return a NamedTuple which retains the fields with names ending with `b` in `a`. 
+    endswith(a::NamedTuple, b::Val{n})
+Return a NamedTuple which retains the fields with names that do not end with `b` in `a`. 
 ```jldoctest
-julia> QueryOperators.NamedTupleUtilities.endswith((abc=1,bcd=2,cde=3),Val(:d))
-(bcd = 2,)
+julia> QueryOperators.NamedTupleUtilities.not_endswith((abc=1,bcd=2,cde=3),Val(:d))
+(abc = 1, cde = 3)
 ```
 """
 @generated function endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
@@ -137,11 +137,11 @@ julia> QueryOperators.NamedTupleUtilities.endswith((abc=1,bcd=2,cde=3),Val(:d))
 end
 
 """
-    endswith(a::NamedTuple, b::Val{n})
-Return a NamedTuple which retains the fields with names that do not end with `b` in `a`. 
+    not_endswith(a::NamedTuple, b::Val{n})
+Return a NamedTuple which retains the fields with names ending with `b` in `a`. 
 ```jldoctest
-julia> QueryOperators.NamedTupleUtilities.not_endswith((abc=1,bcd=2,cde=3),Val(:d))
-(abc = 1, cde = 3)
+julia> QueryOperators.NamedTupleUtilities.endswith((abc=1,bcd=2,cde=3),Val(:d))
+(bcd = 2,)
 ```
 """
 @generated function not_endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
