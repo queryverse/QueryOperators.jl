@@ -35,9 +35,9 @@ using QueryOperators
 @inferred QueryOperators.NamedTupleUtilities.not_occursin((abc=1,bcd=2,cde=3),Val(:d))
 
 nt = (a=[4,3,2],b=[true,false,false],c=["Named","Tuple","Utilities"])
-@test QueryOperators.NamedTupleUtilities.oftype(nt, Val(Int64)) == (a=[4,3,2],)
+@test QueryOperators.NamedTupleUtilities.oftype(nt, Val(Int)) == (a=[4,3,2],)
 @test QueryOperators.NamedTupleUtilities.oftype(nt, Val(Any)) == nt
 @test QueryOperators.NamedTupleUtilities.oftype(nt, Val(Float64)) == NamedTuple()
-@inferred QueryOperators.NamedTupleUtilities.oftype(nt, Val(Int64))
+@inferred QueryOperators.NamedTupleUtilities.oftype(nt, Val(Int))
 
 end
