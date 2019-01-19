@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.6.0 Release Notes
+* Add unique command
+
 # QueryOperators.jl v0.5.2 Release Notes
 * Various bug fixes
 * Some new features for NamedTupleUtilities

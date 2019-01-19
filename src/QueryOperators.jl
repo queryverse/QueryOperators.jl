@@ -22,6 +22,7 @@ include("enumerable/enumerable_defaultifempty.jl")
 include("enumerable/enumerable_count.jl")
 include("enumerable/enumerable_take.jl")
 include("enumerable/enumerable_drop.jl")
+include("enumerable/enumerable_unique.jl")
 include("enumerable/show.jl")
 
 include("source_iterable.jl")
