@@ -149,6 +149,8 @@ a │ b │ c
 
 end
 
+include("test_enumerable_unique.jl")
+
 include("test_namedtupleutilities.jl")
 
 end
