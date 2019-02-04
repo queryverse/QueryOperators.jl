@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.7.0 Release Notes
+* Add support for "application/vnd.dataresource+json" MIME showing
+
 # QueryOperators.jl v0.6.0 Release Notes
 * Add unique command
 
