@@ -66,7 +66,7 @@ end
 
 # ensure that the default value must be of the same type
 errored = false
-try 
+try
     QueryOperators.@default_if_empty(source_1, "string")
 catch
     errored = true
@@ -146,6 +146,9 @@ a │ b │ c
 
 @test sprint((stream,data)->show(stream, "text/html", data), ntups) ==
     "<table><thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr></tbody></table>"
+
+@test sprint((stream,data)->show(stream, "application/vnd.dataresource+json", data), ntups) ==
+    "{\"schema\":{\"fields\":[{\"name\":\"a\",\"type\":\"integer\"},{\"name\":\"b\",\"type\":\"integer\"},{\"name\":\"c\",\"type\":\"integer\"}]},\"data\":[{\"a\":1,\"b\":2,\"c\":3},{\"a\":4,\"b\":5,\"c\":6}]}"
 
 end
 
