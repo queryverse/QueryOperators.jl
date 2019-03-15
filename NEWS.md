@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.7.1 Release Notes
+* Fix bug in mapmany
+
 # QueryOperators.jl v0.7.0 Release Notes
 * Add support for "application/vnd.dataresource+json" MIME showing
 
