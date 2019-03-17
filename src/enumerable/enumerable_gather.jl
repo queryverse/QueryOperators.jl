@@ -34,7 +34,7 @@ function gather(source::Enumerable, args...; key::Symbol = :key, value::Symbol =
     end
 
     savedFields = (n for n in fields if !(n in indexFields)) # fields that are not in `indexFields`
-    T = NamedTuple{(key, value, savedFields...)}
+    T = NamedTuple{(savedFields..., key, value)}
     return EnumerableGather{T, typeof(source), typeof(fields), typeof(indexFields), typeof(savedFields)}(source, fields, indexFields, savedFields, key, value)
 end
 
