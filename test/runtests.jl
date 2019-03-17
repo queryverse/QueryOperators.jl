@@ -4,6 +4,8 @@ using Test
 
 @testset "QueryOperators" begin
 
+@testset "Core" begin
+
 source_1 = [1,2,2,3,4]
 enum = QueryOperators.query(source_1)
 
@@ -64,7 +66,7 @@ end
 
 # ensure that the default value must be of the same type
 errored = false
-try 
+try
     QueryOperators.@default_if_empty(source_1, "string")
 catch
     errored = true
@@ -149,5 +151,14 @@ gather_result1 = QueryOperators.gather(QueryOperators.query([(US=1, EU=1, CN=1),
 @test sprint(show, gather_result1) == """9x2 query result\nkey │ value\n────┼──────\n:US │ 1    \n:EU │ 1    \n:CN │ 1    \n:US │ 2    \n:EU │ 2    \n:CN │ 2    \n:US │ 3    \n:EU │ 3    \n:CN │ 3    """
 gather_result2 = QueryOperators.gather(QueryOperators.query([(Year=2017, US=1, EU=1, CN=1), (Year=2018, US=2, EU=2, CN=2), (Year=2019, US=3, EU=3, CN=3)]), :US, :EU, :CN)
 @test sprint(show, gather_result2) == """9x3 query result\nkey │ value │ Year\n────┼───────┼─────\n:US │ 1     │ 2017\n:EU │ 1     │ 2017\n:CN │ 1     │ 2017\n:US │ 2     │ 2018\n:EU │ 2     │ 2018\n:CN │ 2     │ 2018\n:US │ 3     │ 2019\n:EU │ 3     │ 2019\n:CN │ 3     │ 2019"""
+
+@test sprint((stream,data)->show(stream, "application/vnd.dataresource+json", data), ntups) ==
+    "{\"schema\":{\"fields\":[{\"name\":\"a\",\"type\":\"integer\"},{\"name\":\"b\",\"type\":\"integer\"},{\"name\":\"c\",\"type\":\"integer\"}]},\"data\":[{\"a\":1,\"b\":2,\"c\":3},{\"a\":4,\"b\":5,\"c\":6}]}"
+
+end
+
+include("test_enumerable_unique.jl")
+
+include("test_namedtupleutilities.jl")
 
 end

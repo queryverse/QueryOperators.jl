@@ -122,3 +122,10 @@ function drop end
 macro drop(source, n)
 	:(drop($(esc(source)), $(esc(n))))
 end
+
+function unique end
+
+macro unique(source, f)
+    q = Expr(:quote, f)
+    :(unique($(esc(source)), $(esc(f)), $(esc(q))))
+end

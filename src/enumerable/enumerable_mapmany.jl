@@ -32,6 +32,12 @@ function expr_contains_ref_to(expr::QuoteNode, var_name::Symbol)
     return expr==var_name
 end
 
+function expr_contains_ref_to(expr::Function, var_name::Symbol)
+    return false
+end
+
+expr_contains_ref_to(::Number, ::Symbol) = false
+
 function mapmany(source::Enumerable, f_collectionSelector::Function, collectionSelector::Expr, f_resultSelector::Function, resultSelector::Expr)
     TS = eltype(source)
     # First detect whether the collectionSelector return value depends at all

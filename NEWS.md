@@ -1,3 +1,22 @@
+# QueryOperators.jl v0.7.1 Release Notes
+* Fix bug in mapmany
+
+# QueryOperators.jl v0.7.0 Release Notes
+* Add support for "application/vnd.dataresource+json" MIME showing
+
+# QueryOperators.jl v0.6.0 Release Notes
+* Add unique command
+
+# QueryOperators.jl v0.5.2 Release Notes
+* Various bug fixes
+* Some new features for NamedTupleUtilities
+
+# QueryOperators.jl v0.5.1 Release Notes
+* Various bug fixes
+
+# QueryOperators.jl v0.5.0 Release Notes
+* Add NamedTupleUtilities
+
 # QueryOperators.jl v0.4.0 Release Notes
 * Add GroupColumnArrayView
 
