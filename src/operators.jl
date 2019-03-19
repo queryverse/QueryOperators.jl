@@ -26,6 +26,12 @@ macro filter(source, f)
     :(QueryOperators.filter($(esc(source)), $(esc(f)), $(esc(q))))
 end
 
+function gather end
+
+macro gather(source, withIndex = False)
+	:(groupby($(esc(source)), $(esc(withIndex))))
+end
+
 function groupby end
 
 macro groupby(source,elementSelector,resultSelector)

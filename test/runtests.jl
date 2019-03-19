@@ -147,6 +147,11 @@ a │ b │ c
 @test sprint((stream,data)->show(stream, "text/html", data), ntups) ==
     "<table><thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr></tbody></table>"
 
+gather_result1 = QueryOperators.gather(QueryOperators.query([(US=1, EU=1, CN=1), (US=2, EU=2, CN=2), (US=3, EU=3, CN=3)]))
+@test sprint(show, gather_result1) == """9x2 query result\nkey │ value\n────┼──────\n:US │ 1    \n:EU │ 1    \n:CN │ 1    \n:US │ 2    \n:EU │ 2    \n:CN │ 2    \n:US │ 3    \n:EU │ 3    \n:CN │ 3    """
+gather_result2 = QueryOperators.gather(QueryOperators.query([(Year=2017, US=1, EU=1, CN=1), (Year=2018, US=2, EU=2, CN=2), (Year=2019, US=3, EU=3, CN=3)]), :US, :EU, :CN)
+@test sprint(show, gather_result2) == "9x3 query result\nYear │ key │ value\n─────┼─────┼──────\n2017 │ :US │ 1    \n2017 │ :EU │ 1    \n2017 │ :CN │ 1    \n2018 │ :US │ 2    \n2018 │ :EU │ 2    \n2018 │ :CN │ 2    \n2019 │ :US │ 3    \n2019 │ :EU │ 3    \n2019 │ :CN │ 3    "
+
 @test sprint((stream,data)->show(stream, "application/vnd.dataresource+json", data), ntups) ==
     "{\"schema\":{\"fields\":[{\"name\":\"a\",\"type\":\"integer\"},{\"name\":\"b\",\"type\":\"integer\"},{\"name\":\"c\",\"type\":\"integer\"}]},\"data\":[{\"a\":1,\"b\":2,\"c\":3},{\"a\":4,\"b\":5,\"c\":6}]}"
 
