@@ -14,20 +14,21 @@ end
 function gather(source::Enumerable, args...; key::Symbol = :key, value::Symbol = :value)
     fields = fieldnames(eltype(source))
     if length(args) > 0
-        indexFields = ()
+        indexFields_vector = Vector{Symbol}(undef, 0)        
         firstArg = true
         for arg in args
             if typeof(arg) == Symbol
-                indexFields = (indexFields..., arg)
+                push!(indexFields_vector, arg)
             else typeof(arg) == Not{Symbol}
                 if firstArg
-                    indexFields = (a for a in fields if a != arg.val)
+                    indexFields_vector = [a for a in fields if a != arg.val]
                 else
-                    indexFields = (a for a in indexFields if a != arg.val)
+                    indexFields_vector = [a for a in indexFields_vector if a != arg.val]
                 end
             end
             firstArg = false
         end
+        indexFields = tuple(indexFields_vector...)
     else
         indexFields = fields
     end
