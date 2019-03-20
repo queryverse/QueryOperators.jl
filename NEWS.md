@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.8.0 Release Notes
+* Add gather
+
 # QueryOperators.jl v0.7.1 Release Notes
 * Fix bug in mapmany
 
