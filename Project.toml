@@ -11,7 +11,7 @@ TableShowUtils = "5e66a065-1f0a-5976-b372-e0b8c017ca10"
 [compat]
 DataStructures = "≥ 0.11.0"
 DataValues = "≥ 0.4.4"
-IteratorInterfaceExtensions = "≥ 0.1.1"
+IteratorInterfaceExtensions = "^0.1.1, ^1"
 TableShowUtils = "≥ 0.1.1"
 julia = "1"
 
