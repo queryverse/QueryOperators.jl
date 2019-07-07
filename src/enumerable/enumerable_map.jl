@@ -3,7 +3,7 @@ struct EnumerableMap{T, S, Q<:Function} <: Enumerable
     f::Q
 end
 
-Base.IteratorSize(::Type{EnumerableMap{T,S,Q}}) where {T,S,Q} = Base.IteratorSize(S)
+Base.IteratorSize(::Type{EnumerableMap{T,S,Q}}) where {T,S,Q} = haslength(S)
 
 Base.eltype(iter::Type{EnumerableMap{T,S,Q}}) where {T,S,Q} = T
 

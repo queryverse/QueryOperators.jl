@@ -4,7 +4,7 @@ struct EnumerableOrderby{T,S,KS<:Function,TKS} <: Enumerable
     descending::Bool
 end
 
-Base.IteratorSize(::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = (Base.IteratorSize(S) isa Base.HasLength || Base.IteratorSize(S) isa Base.HasShape) ? Base.HasLength() : Base.IteratorSize(S)
+Base.IteratorSize(::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = haslength(S)
 
 Base.eltype(::Type{EnumerableOrderby{T,S,KS,TKS}}) where {T,S,KS,TKS} = T
 
