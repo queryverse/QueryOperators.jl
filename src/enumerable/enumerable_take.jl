@@ -9,7 +9,7 @@ function take(source::Enumerable, n::Integer)
     return EnumerableTake{T,S}(source, Int(n))
 end
 
-Base.IteratorSize(::Type{EnumerableTake{T,S}}) where {T,S} = (Base.IteratorSize(S) isa Base.HasLength || Base.IteratorSize(S) isa Base.HasShape) ? Base.HasLength() : Base.SizeUnknown()
+Base.IteratorSize(::Type{EnumerableTake{T,S}}) where {T,S} = haslength(S)
 
 Base.eltype(::Type{EnumerableTake{T,S}}) where {T,S} = T
 

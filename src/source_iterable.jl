@@ -13,7 +13,7 @@ function query(source)
     return source_enumerable
 end
 
-Base.IteratorSize(::Type{EnumerableIterable{T,S}}) where {T,S} = Base.IteratorSize(S) isa Base.HasShape ? Base.HasLength() : Base.IteratorSize(S)
+Base.IteratorSize(::Type{EnumerableIterable{T,S}}) where {T,S} = haslength(S)
 
 Base.eltype(::Type{EnumerableIterable{T,S}}) where {T,S} = T
 
