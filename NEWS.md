@@ -1,6 +1,7 @@
-# QueryOperators.jl v1.0.0 Release Notes
+# QueryOperators.jl v0.9.0 Release Notes
 * Drop julia 0.7 support
 * Move to Project.toml
+* Various performance improvements
 
 # QueryOperators.jl v0.8.0 Release Notes
 * Add gather
