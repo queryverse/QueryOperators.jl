@@ -1,3 +1,6 @@
+# QueryOperators.jl v0.9.1 Release Notes
+* Fix a bug in the oftype function
+
 # QueryOperators.jl v0.9.0 Release Notes
 * Drop julia 0.7 support
 * Move to Project.toml
