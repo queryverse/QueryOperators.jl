@@ -194,7 +194,7 @@ NamedTuple()
 ```
 """
 @generated function oftype(a::NamedTuple{an}, ::Val{b}) where {an, b}
-    names = ((i for i in an if eltype(fieldtype(a, i)) <: b)...,)
+    names = ((i for i in an if fieldtype(a, i) <: b)...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
     return :(NamedTuple{$names,$types}(($(vals...),)))
