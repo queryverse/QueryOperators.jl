@@ -11,7 +11,7 @@ struct Not{T}
     val::T
 end
 
-function gather(source::Enumerable, args...; key::Symbol = :key, value::Symbol = :value)
+function gather(source::Enumerable, args...; key::Symbol=:key, value::Symbol=:value)
     fields = fieldnames(eltype(source))
     if length(args) > 0
         indexFields_vector = Vector{Symbol}(undef, 0)        
@@ -39,12 +39,12 @@ function gather(source::Enumerable, args...; key::Symbol = :key, value::Symbol =
     valueTypes = (fieldtype(eltype(source), indexField) for indexField in indexFields)
     valueType = reduce(promote_type, valueTypes)
 
-    T = NamedTuple{(savedFields..., key, value), Tuple{savedFieldsType..., Symbol, valueType}}
-    return EnumerableGather{T, typeof(source), typeof(fields), typeof(indexFields), typeof(savedFields)}(source, 
+    T = NamedTuple{(savedFields..., key, value),Tuple{savedFieldsType...,Symbol,valueType}}
+    return EnumerableGather{T,typeof(source),typeof(fields),typeof(indexFields),typeof(savedFields)}(source, 
         fields, indexFields, savedFields, key, value)
 end
 
-function Base.iterate(iter::EnumerableGather{T, S, F, I, A}) where {T, S, F, I, A}
+function Base.iterate(iter::EnumerableGather{T,S,F,I,A}) where {T,S,F,I,A}
     source_iterate = iterate(iter.source)
     if source_iterate == nothing || length(iter.indexFields) == 0
         return nothing
@@ -52,11 +52,11 @@ function Base.iterate(iter::EnumerableGather{T, S, F, I, A}) where {T, S, F, I, 
     key = iter.indexFields[1]
     current_source_row = source_iterate[1]
     value = current_source_row[key]
-    return (T((Base.map(n->current_source_row[n], iter.savedFields)..., key, value)), 
-        (current_source_row=current_source_row, source_state=source_iterate[2], current_index_field_index=1))
+    return (T((Base.map(n -> current_source_row[n], iter.savedFields)..., key, value)), 
+        (current_source_row = current_source_row, source_state = source_iterate[2], current_index_field_index = 1))
 end
 
-function Base.iterate(iter::EnumerableGather{T, S, F, I, A}, state) where {T, S, F, I, A}
+function Base.iterate(iter::EnumerableGather{T,S,F,I,A}, state) where {T,S,F,I,A}
     current_index_field_index = state.current_index_field_index + 1
     if current_index_field_index > length(iter.indexFields)
         source_iterate = iterate(iter.source, state.source_state)
@@ -72,10 +72,10 @@ function Base.iterate(iter::EnumerableGather{T, S, F, I, A}, state) where {T, S,
     end
     key = iter.indexFields[current_index_field_index]
     value = current_source_row[key]
-    return (T((Base.map(n->current_source_row[n], iter.savedFields)..., key, value)), 
-        (current_source_row=current_source_row, source_state=source_state, current_index_field_index=current_index_field_index))
+    return (T((Base.map(n -> current_source_row[n], iter.savedFields)..., key, value)), 
+        (current_source_row = current_source_row, source_state = source_state, current_index_field_index = current_index_field_index))
 end
 
-function Base.eltype(iter::EnumerableGather{T, S, F, I, A}) where {T, S, F, I, A}
+function Base.eltype(iter::EnumerableGather{T,S,F,I,A}) where {T,S,F,I,A}
     return T
 end

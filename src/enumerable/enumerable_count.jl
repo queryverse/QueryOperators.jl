@@ -3,5 +3,5 @@ function count(source::Enumerable, filter::Function, filter_expr::Expr)
 end
 
 function count(source::Enumerable)
-    return Base.count(i->true, source)
+    return Base.count(i -> true, source)
 end

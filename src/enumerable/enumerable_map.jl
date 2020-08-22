@@ -1,4 +1,4 @@
-struct EnumerableMap{T, S, Q<:Function} <: Enumerable
+struct EnumerableMap{T,S,Q <: Function} <: Enumerable
     source::S
     f::Q
 end
@@ -19,7 +19,7 @@ end
 
 function Base.iterate(iter::EnumerableMap{T,S,Q}, state...) where {T,S,Q}
     ret = iterate(iter.source, state...)
-    if ret===nothing
+    if ret === nothing
         return nothing
     else
         return iter.f(ret[1]), ret[2]

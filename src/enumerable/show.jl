@@ -8,16 +8,16 @@ function printsequence(io::IO, source::Enumerable)
 
     i = 1
     foo = iterate(source)
-    while foo!==nothing
+    while foo !== nothing
         v, s = foo
         println(io)
-        if i==max_element_to_show+1
+        if i == max_element_to_show + 1
             print(io, "... with ")
-            if Base.IteratorSize(source)!=Base.HasLength()
+            if Base.IteratorSize(source) != Base.HasLength()
                 print(io, " more elements")
             else
                 extra_rows = length(source) - max_element_to_show
-                print(io, "$extra_rows more $(extra_rows==1 ? "element" : "elements")")
+                print(io, "$extra_rows more $(extra_rows == 1 ? "element" : "elements")")
             end
             break
         else

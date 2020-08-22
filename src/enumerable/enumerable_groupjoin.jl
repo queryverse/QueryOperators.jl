@@ -1,4 +1,4 @@
-struct EnumerableGroupJoin{T,TKey,TI,SO,SI,OKS<:Function,IKS<:Function,RS<:Function} <: Enumerable
+struct EnumerableGroupJoin{T,TKey,TI,SO,SI,OKS <: Function,IKS <: Function,RS <: Function} <: Enumerable
     outer::SO
     inner::SI
     outerKeySelector::OKS
@@ -14,7 +14,7 @@ function groupjoin(outer::Enumerable, inner::Enumerable, f_outerKeySelector::Fun
     TKeyOuter = Base._return_type(f_outerKeySelector, Tuple{TO,})
     TKeyInner = Base._return_type(f_innerKeySelector, Tuple{TI,})
 
-    if TKeyOuter!=TKeyInner
+    if TKeyOuter != TKeyInner
         error("The keys in the join clause have different types, $TKeyOuter and $TKeyInner.")
     end
 
@@ -27,7 +27,7 @@ function groupjoin(outer::Enumerable, inner::Enumerable, f_outerKeySelector::Fun
     IKS = typeof(f_innerKeySelector)
     RS = typeof(f_resultSelector)
 
-    return EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(outer,inner,f_outerKeySelector,f_innerKeySelector,f_resultSelector)
+    return EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}(outer, inner, f_outerKeySelector, f_innerKeySelector, f_resultSelector)
 end
 
 function Base.iterate(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
@@ -44,25 +44,25 @@ function Base.iterate(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
 
     for i in iter.outer
         outerKey = iter.outerKeySelector(i)
-        if haskey(inner_dict,outerKey)
+        if haskey(inner_dict, outerKey)
             g = inner_dict[outerKey]
         else
             g = Array{TI}(undef, 0)
         end
-        push!(results, iter.resultSelector(i,g))
+        push!(results, iter.resultSelector(i, g))
     end
 
-    if length(results)==0
+    if length(results) == 0
         return nothing
     end
 
-    return results[1], (results,2)
+    return results[1], (results, 2)
 end
 
 function Base.iterate(iter::EnumerableGroupJoin{T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}, state) where {T,TKeyOuter,TI,SO,SI,OKS,IKS,RS}
-    if state[2]>length(state[1])
+    if state[2] > length(state[1])
         return nothing
     else
-        return state[1][state[2]], (state[1], state[2]+1)
+        return state[1][state[2]], (state[1], state[2] + 1)
     end
 end

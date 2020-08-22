@@ -1,4 +1,4 @@
-struct EnumerableGroupBySimple{T,TKey,TS,SO,ES<:Function} <: Enumerable
+struct EnumerableGroupBySimple{T,TKey,TS,SO,ES <: Function} <: Enumerable
     source::SO
     elementSelector::ES
 end
@@ -19,14 +19,14 @@ function Base.size(gcav::GroupColumnArrayView)
 end
 
 function Base.getindex(gcav::GroupColumnArrayView{T,G,INDEX}, i::Int) where {T,G,INDEX}
-    return getproperty(gcav.grouping[i],INDEX)
+    return getproperty(gcav.grouping[i], INDEX)
 end
 
 Base.IndexStyle(::Type{GroupColumnArrayView}) = IndexLinear()
 
 function Base.getproperty(g::Grouping{TKey,T}, name::Symbol) where {TKey,T}
     
-    return GroupColumnArrayView{fieldtype(T,name),Grouping{TKey,T},name}(g)
+    return GroupColumnArrayView{fieldtype(T, name),Grouping{TKey,T},name}(g)
 end
 
 Base.size(A::Grouping{TKey,T}) where {TKey,T} = size(getfield(A, :elements))
@@ -45,7 +45,7 @@ function groupby(source::Enumerable, f_elementSelector::Function, elementSelecto
 
     ES = typeof(f_elementSelector)
 
-    return EnumerableGroupBySimple{T,TKey,TS,SO,ES}(source,f_elementSelector)
+    return EnumerableGroupBySimple{T,TKey,TS,SO,ES}(source, f_elementSelector)
 end
 
 function Base.iterate(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}) where {T,TKey,TS,SO,ES}
@@ -53,13 +53,13 @@ function Base.iterate(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}) where {T,T
     for i in iter.source
         key = iter.elementSelector(i)
         if !haskey(result, key)
-            result[key] = T(key,Array{TS}(undef, 0))
+            result[key] = T(key, Array{TS}(undef, 0))
         end
-        push!(getfield(result[key], :elements),i)
+        push!(getfield(result[key], :elements), i)
     end
 
     groups = collect(values(result))
-    if length(groups)==0
+    if length(groups) == 0
         return nothing
     else
         return groups[1], (groups, 2)
@@ -67,20 +67,20 @@ function Base.iterate(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}) where {T,T
 end
 
 function Base.iterate(iter::EnumerableGroupBySimple{T,TKey,TS,SO,ES}, state) where {T,TKey,TS,SO,ES}
-    if state[2]>length(state[1])
+    if state[2] > length(state[1])
         return nothing
     else
-        return state[1][state[2]], (state[1], state[2]+1)
+        return state[1][state[2]], (state[1], state[2] + 1)
     end
 end
 
-struct EnumerableGroupBy{T,TKey,TR,SO,ES<:Function,RS<:Function} <: Enumerable
+struct EnumerableGroupBy{T,TKey,TR,SO,ES <: Function,RS <: Function} <: Enumerable
     source::SO
     elementSelector::ES
     resultSelector::RS
 end
 
-Base.eltype(::Type{EnumerableGroupBy{T,TKey,TR,SO,ES, RS}}) where {T,TKey,TR,SO,ES,RS} = T
+Base.eltype(::Type{EnumerableGroupBy{T,TKey,TR,SO,ES,RS}}) where {T,TKey,TR,SO,ES,RS} = T
 
 function groupby(source::Enumerable, f_elementSelector::Function, elementSelector::Expr, f_resultSelector::Function, resultSelector::Expr)
     TS = eltype(source)
@@ -95,7 +95,7 @@ function groupby(source::Enumerable, f_elementSelector::Function, elementSelecto
     ES = typeof(f_elementSelector)
     RS = typeof(f_resultSelector)
 
-    return EnumerableGroupBy{T,TKey,TR,SO,ES,RS}(source,f_elementSelector,f_resultSelector)
+    return EnumerableGroupBy{T,TKey,TR,SO,ES,RS}(source, f_elementSelector, f_resultSelector)
 end
 
 function Base.iterate(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}) where {T,TKey,TR,SO,ES}
@@ -103,13 +103,13 @@ function Base.iterate(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}) where {T,TKey,TR
     for i in iter.source
         key = iter.elementSelector(i)
         if !haskey(result, key)
-            result[key] = T(key,Array{TR}(undef,0))
+            result[key] = T(key, Array{TR}(undef, 0))
         end
-        push!(getfield(result[key], :elements),iter.resultSelector(i))
+        push!(getfield(result[key], :elements), iter.resultSelector(i))
     end
 
     groups = collect(values(result))
-    if length(groups)==0
+    if length(groups) == 0
         return nothing
     else
         return groups[1], (groups, 2)
@@ -117,9 +117,9 @@ function Base.iterate(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}) where {T,TKey,TR
 end
 
 function Base.iterate(iter::EnumerableGroupBy{T,TKey,TR,SO,ES}, state) where {T,TKey,TR,SO,ES}
-    if state[2]>length(state[1])
+    if state[2] > length(state[1])
         return nothing
     else
-        return state[1][state[2]], (state[1], state[2]+1)
+        return state[1][state[2]], (state[1], state[2] + 1)
     end
 end
