@@ -1,5 +1,5 @@
 # T is the type of the elements produced by this iterator
-struct EnumerableFilter{T,S,Q<:Function} <: Enumerable
+struct EnumerableFilter{T,S,Q <: Function} <: Enumerable
     source::S
     filter::Q
 end
@@ -16,7 +16,7 @@ end
 function Base.iterate(iter::EnumerableFilter{T,S,Q}, state...) where {T,S,Q}
     ret = iterate(iter.source, state...)
 
-    while ret!==nothing
+    while ret !== nothing
         if iter.filter(ret[1])
             return ret
         end

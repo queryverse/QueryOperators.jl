@@ -8,7 +8,7 @@ julia> QueryOperators.NamedTupleUtilities.select((a=1,b=2,c=3),Val(:a))
 (a = 1,)
 ```
 """
-@generated function select(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function select(a::NamedTuple{an}, ::Val{bn}) where {an,bn}
     names = ((i for i in an if i == bn)...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -23,7 +23,7 @@ julia> QueryOperators.NamedTupleUtilities.remove((a=1,b=2,c=3),Val(:c))
 (a = 1, b = 2)
 ```
 """
-@generated function remove(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function remove(a::NamedTuple{an}, ::Val{bn}) where {an,bn}
     names = ((i for i in an if i != bn)...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -40,7 +40,7 @@ julia> QueryOperators.NamedTupleUtilities.range((a=1,b=2,c=3),Val(:a),Val(:b))
 (a = 1, b = 2)
 ```
 """
-@generated function range(a::NamedTuple{an}, ::Val{bn}, ::Val{cn}) where {an, bn, cn}
+@generated function range(a::NamedTuple{an}, ::Val{bn}, ::Val{cn}) where {an,bn,cn}
     rangeStarted = false
     names = Symbol[]
     for n in an
@@ -74,7 +74,7 @@ julia> QueryOperators.NamedTupleUtilities.rename((a = 1, b = 2, c = 3),Val(:a),V
 ERROR: duplicate field name in NamedTuple: "c" is not unique
 ```
 """
-@generated function rename(a::NamedTuple{an}, ::Val{bn}, ::Val{cn}) where {an, bn, cn}
+@generated function rename(a::NamedTuple{an}, ::Val{bn}, ::Val{cn}) where {an,bn,cn}
     names = Symbol[]
     typesArray = DataType[]
     vals = Expr[]
@@ -99,7 +99,7 @@ julia> QueryOperators.NamedTupleUtilities.startswith((abc=1,bcd=2,cde=3),Val(:a)
 (abc = 1,)
 ```
 """
-@generated function startswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function startswith(a::NamedTuple{an}, ::Val{bn}) where {an,bn}
     names = ((i for i in an if Base.startswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -114,7 +114,7 @@ julia> QueryOperators.NamedTupleUtilities.not_startswith((abc=1,bcd=2,cde=3),Val
 (bcd = 2, cde = 3)
 ```
 """
-@generated function not_startswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function not_startswith(a::NamedTuple{an}, ::Val{bn}) where {an,bn}
     names = ((i for i in an if !Base.startswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -129,7 +129,7 @@ julia> QueryOperators.NamedTupleUtilities.not_endswith((abc=1,bcd=2,cde=3),Val(:
 (abc = 1, cde = 3)
 ```
 """
-@generated function endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function endswith(a::NamedTuple{an}, ::Val{bn}) where {an,bn}
     names = ((i for i in an if Base.endswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -144,7 +144,7 @@ julia> QueryOperators.NamedTupleUtilities.endswith((abc=1,bcd=2,cde=3),Val(:d))
 (bcd = 2,)
 ```
 """
-@generated function not_endswith(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function not_endswith(a::NamedTuple{an}, ::Val{bn}) where {an,bn}
     names = ((i for i in an if !Base.endswith(String(i), String(bn)))...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -159,7 +159,7 @@ julia> QueryOperators.NamedTupleUtilities.occursin((abc=1,bcd=2,cde=3),Val(:d))
 (bcd = 2, cde = 3)
 ```
 """
-@generated function occursin(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function occursin(a::NamedTuple{an}, ::Val{bn}) where {an,bn}
     names = ((i for i in an if Base.occursin(String(bn), String(i)))...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -174,7 +174,7 @@ julia> QueryOperators.NamedTupleUtilities.not_occursin((abc=1,bcd=2,cde=3),Val(:
 (abc = 1,)
 ```
 """
-@generated function not_occursin(a::NamedTuple{an}, ::Val{bn}) where {an, bn}
+@generated function not_occursin(a::NamedTuple{an}, ::Val{bn}) where {an,bn}
     names = ((i for i in an if !Base.occursin(String(bn), String(i)))...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]
@@ -193,7 +193,7 @@ julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c
 NamedTuple()
 ```
 """
-@generated function oftype(a::NamedTuple{an}, ::Val{b}) where {an, b}
+@generated function oftype(a::NamedTuple{an}, ::Val{b}) where {an,b}
     names = ((i for i in an if fieldtype(a, i) <: b)...,)
     types = Tuple{(fieldtype(a, n) for n in names)...}
     vals = Expr[:(getfield(a, $(QuoteNode(n)))) for n in names]

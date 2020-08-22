@@ -28,20 +28,20 @@ end
 
 function gather end
 
-macro gather(source, withIndex = False)
+macro gather(source, withIndex=False)
 	:(groupby($(esc(source)), $(esc(withIndex))))
 end
 
 function groupby end
 
-macro groupby(source,elementSelector,resultSelector)
+macro groupby(source, elementSelector, resultSelector)
 	q_elementSelector = Expr(:quote, elementSelector)
 	q_resultSelector = Expr(:quote, resultSelector)
 
 	:(groupby($(esc(source)), $(esc(elementSelector)), $(esc(q_elementSelector)), $(esc(resultSelector)), $(esc(q_resultSelector))))
 end
 
-macro groupby_simple(source,elementSelector)
+macro groupby_simple(source, elementSelector)
 	q_elementSelector = Expr(:quote, elementSelector)
 
 	:(groupby($(esc(source)), $(esc(elementSelector)), $(esc(q_elementSelector))))
@@ -54,7 +54,7 @@ macro groupjoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector
 	q_innerKeySelector = Expr(:quote, innerKeySelector)
 	q_resultSelector = Expr(:quote, resultSelector)
 
-	:(groupjoin($(esc(outer)), $(esc(inner)), $(esc(outerKeySelector)), $(esc(q_outerKeySelector)), $(esc(innerKeySelector)),$(esc(q_innerKeySelector)), $(esc(resultSelector)),$(esc(q_resultSelector))))
+	:(groupjoin($(esc(outer)), $(esc(inner)), $(esc(outerKeySelector)), $(esc(q_outerKeySelector)), $(esc(innerKeySelector)), $(esc(q_innerKeySelector)), $(esc(resultSelector)), $(esc(q_resultSelector))))
 end
 
 function join end
@@ -64,7 +64,7 @@ macro join(outer, inner, outerKeySelector, innerKeySelector, resultSelector)
 	q_innerKeySelector = Expr(:quote, innerKeySelector)
 	q_resultSelector = Expr(:quote, resultSelector)
 
-	:(join($(esc(outer)), $(esc(inner)), $(esc(outerKeySelector)), $(esc(q_outerKeySelector)), $(esc(innerKeySelector)),$(esc(q_innerKeySelector)), $(esc(resultSelector)),$(esc(q_resultSelector))))
+	:(join($(esc(outer)), $(esc(inner)), $(esc(outerKeySelector)), $(esc(q_outerKeySelector)), $(esc(innerKeySelector)), $(esc(q_innerKeySelector)), $(esc(resultSelector)), $(esc(q_resultSelector))))
 end
 
 function map end
@@ -76,7 +76,7 @@ end
 
 function mapmany end
 
-macro mapmany(source,collectionSelector,resultSelector)
+macro mapmany(source, collectionSelector, resultSelector)
 	q_collectionSelector = Expr(:quote, collectionSelector)
 	q_resultSelector = Expr(:quote, resultSelector)
 
