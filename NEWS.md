@@ -1,3 +1,6 @@
+# QueryOperators.jl v1.0.0 Release Notes
+* Add the pivot_wider and pivot_longer operators
+
 # QueryOperators.jl v0.9.1 Release Notes
 * Fix a bug in the oftype function
 
