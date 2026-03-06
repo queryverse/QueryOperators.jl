@@ -1,4 +1,5 @@
-@testset "pivot_longer" begin
+@testitem "pivot_longer" begin
+    using QueryOperators.DataValues
 
     # Basic: pivot all columns
     data = QueryOperators.query([(US=1, EU=2, CN=3), (US=4, EU=5, CN=6)])
@@ -44,7 +45,7 @@
 
 end
 
-@testset "_resolve_pivot_cols" begin
+@testitem "_resolve_pivot_cols" begin
     NT = NamedTuple{(:year, :wk1, :wk2, :total), Tuple{Int,Int,Int,Int}}
 
     # Include by name
@@ -81,7 +82,8 @@ end
     @test QueryOperators._resolve_pivot_cols(NT, Val(((:include_name, :year), (:include_all, :_), (:exclude_name, :total)))) == (:year, :wk1, :wk2)
 end
 
-@testset "pivot_wider" begin
+@testitem "pivot_wider" begin
+    using DataValues
 
     # Basic: long to wide
     data = QueryOperators.query([
@@ -95,13 +97,13 @@ end
     @test length(result) == 2
     T = eltype(result)
     @test fieldnames(T) == (:year, :US, :EU)
-    @test fieldtype(T, :US) == DataValues.DataValue{Int64}
+    @test fieldtype(T, :US) == DataValue{Int64}
     @test result[1].year == 2017
-    @test result[1].US == DataValues.DataValue(1)
-    @test result[1].EU == DataValues.DataValue(2)
+    @test result[1].US == DataValue(1)
+    @test result[1].EU == DataValue(2)
     @test result[2].year == 2018
-    @test result[2].US == DataValues.DataValue(3)
-    @test result[2].EU == DataValues.DataValue(4)
+    @test result[2].US == DataValue(3)
+    @test result[2].EU == DataValue(4)
 
     # Absent combinations become NA DataValues
     data2 = QueryOperators.query([
@@ -114,10 +116,10 @@ end
 
     @test length(result2) == 2
     @test result2[1].year == 2017
-    @test result2[1].US == DataValues.DataValue(1)
-    @test result2[1].EU == DataValues.DataValue(2)
-    @test result2[2].US == DataValues.DataValue(3)
-    @test DataValues.isna(result2[2].EU)
+    @test result2[1].US == DataValue(1)
+    @test result2[1].EU == DataValue(2)
+    @test result2[2].US == DataValue(3)
+    @test isna(result2[2].EU)
 
     # Length is known
     wide = QueryOperators.pivot_wider(data, :country, :value)

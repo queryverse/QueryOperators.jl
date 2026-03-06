@@ -10,13 +10,15 @@ IteratorInterfaceExtensions = "82899510-4779-5014-852e-03e436cf321d"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
+
 
 [compat]
-julia = "1"
+julia = "1.10"
 DataStructures = "0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18"
 TableShowUtils = "0.1.1, 0.2"
 DataValues = "0.4.4"
 IteratorInterfaceExtensions = "0.1.1, 1"
 
 [targets]
-test = ["Test"]
+test = ["Test", "TestItemRunner"]
