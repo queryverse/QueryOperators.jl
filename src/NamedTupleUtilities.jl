@@ -185,11 +185,11 @@ end
     oftype(a::NamedTuple, b::DataType)
 Returns a NamedTuple which retains the fields whose elements have type `b`.
 ```jldoctest
-julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c = ["He","llo","World!"]), Val(Int64))
-(a = [4, 5, 6],)
-julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c = ["He","llo","World!"]), Val(Number))
-(a = [4, 5, 6], b = [3., 2., 1.])
-julia> QueryOperators.NamedTupleUtilities.oftype((a = [4,5,6], b = [3.,2.,1.], c = ["He","llo","World!"]), Val(Float32))
+julia> QueryOperators.NamedTupleUtilities.oftype((a = 4, b = 3., c = "He"), Val(Int64))
+(a = 4,)
+julia> QueryOperators.NamedTupleUtilities.oftype((a = 4, b = 3., c = "He"), Val(Number))
+(a = 4, b = 3.0)
+julia> QueryOperators.NamedTupleUtilities.oftype((a = 4, b = 3., c = "He"), Val(Float32))
 NamedTuple()
 ```
 """

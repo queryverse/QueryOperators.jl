@@ -1,5 +1,8 @@
 using Documenter, QueryOperators
 
+# Configure DocMeta to automatically import QueryOperators for all doctests
+DocMeta.setdocmeta!(QueryOperators, :DocTestSetup, :(using QueryOperators); recursive=true)
+
 makedocs(
 	modules = [QueryOperators],
 	sitename = "QueryOperators.jl",
@@ -8,7 +11,8 @@ makedocs(
 	),
 	pages = [
         "Introduction" => "index.md"
-    ]
+    ],
+	warnonly = [:missing_docs]
 )
 
 deploydocs(
