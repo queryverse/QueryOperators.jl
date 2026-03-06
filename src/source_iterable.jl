@@ -3,7 +3,9 @@ struct EnumerableIterable{T,S} <: Enumerable
 end
 
 function query(source)
-    IteratorInterfaceExtensions.isiterable(source) || error()
+    if !IteratorInterfaceExtensions.isiterable(source)
+        error("$(typeof(source)) does not meet the IteratorInterfaceExtensions.jl API")
+    end
     typed_source = IteratorInterfaceExtensions.getiterator(source)
 	T = eltype(typed_source)
     S = typeof(typed_source)
