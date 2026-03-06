@@ -6,7 +6,7 @@
     result = QueryOperators.pivot_longer(data, (:US, :EU, :CN)) |> collect
 
     @test length(result) == 6
-    @test eltype(result) == NamedTuple{(:variable, :value), Tuple{Symbol, Int64}}
+    @test eltype(result) == NamedTuple{(:variable, :value), Tuple{Symbol, Int}}
     @test result[1] == (variable=:US, value=1)
     @test result[2] == (variable=:EU, value=2)
     @test result[3] == (variable=:CN, value=3)
@@ -19,7 +19,7 @@
     result2 = QueryOperators.pivot_longer(data2, (:US, :EU)) |> collect
 
     @test length(result2) == 4
-    @test eltype(result2) == NamedTuple{(:year, :variable, :value), Tuple{Int64, Symbol, Int64}}
+    @test eltype(result2) == NamedTuple{(:year, :variable, :value), Tuple{Int, Symbol, Int}}
     @test result2[1] == (year=2017, variable=:US, value=1)
     @test result2[2] == (year=2017, variable=:EU, value=2)
     @test result2[3] == (year=2018, variable=:US, value=3)
@@ -28,14 +28,14 @@
     # Custom names_to and values_to
     result3 = QueryOperators.pivot_longer(data2, (:US, :EU); names_to=:country, values_to=:sales) |> collect
 
-    @test eltype(result3) == NamedTuple{(:year, :country, :sales), Tuple{Int64, Symbol, Int64}}
+    @test eltype(result3) == NamedTuple{(:year, :country, :sales), Tuple{Int, Symbol, Int}}
     @test result3[1] == (year=2017, country=:US, sales=1)
 
     # Type promotion: mixing Int and Float
     data3 = QueryOperators.query([(id=1, a=1, b=2.0)])
     result4 = QueryOperators.pivot_longer(data3, (:a, :b)) |> collect
 
-    @test eltype(result4) == NamedTuple{(:id, :variable, :value), Tuple{Int64, Symbol, Float64}}
+    @test eltype(result4) == NamedTuple{(:id, :variable, :value), Tuple{Int, Symbol, Float64}}
     @test result4[1] == (id=1, variable=:a, value=1.0)
     @test result4[2] == (id=1, variable=:b, value=2.0)
 
@@ -97,7 +97,7 @@ end
     @test length(result) == 2
     T = eltype(result)
     @test fieldnames(T) == (:year, :US, :EU)
-    @test fieldtype(T, :US) == DataValue{Int64}
+    @test fieldtype(T, :US) == DataValue{Int}
     @test result[1].year == 2017
     @test result[1].US == DataValue(1)
     @test result[1].EU == DataValue(2)
