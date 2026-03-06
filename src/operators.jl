@@ -123,3 +123,7 @@ macro unique(source, f)
     q = Expr(:quote, f)
     :(unique($(esc(source)), $(esc(f)), $(esc(q))))
 end
+
+function pivot_longer end
+
+function pivot_wider end

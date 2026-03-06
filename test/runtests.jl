@@ -156,4 +156,6 @@ include("test_enumerable_unique.jl")
 
 include("test_namedtupleutilities.jl")
 
+include("test_pivot.jl")
+
 end
