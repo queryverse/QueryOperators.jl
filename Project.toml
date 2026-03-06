@@ -1,6 +1,6 @@
 name = "QueryOperators"
 uuid = "2aef5ad7-51ca-5a8f-8e88-e75cf067b44b"
-version = "0.9.4-DEV"
+version = "1.0.0"
 
 [deps]
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
@@ -9,9 +9,8 @@ DataValues = "e7dc6d0d-1eca-5fa6-8ad6-5aecde8b7ea5"
 IteratorInterfaceExtensions = "82899510-4779-5014-852e-03e436cf321d"
 
 [extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
-
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 julia = "1.10"
