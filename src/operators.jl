@@ -127,3 +127,5 @@ end
 function pivot_longer end
 
 function pivot_wider end
+
+function summarize end
