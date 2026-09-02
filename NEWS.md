@@ -1,3 +1,6 @@
+# QueryOperators.jl v1.1.0 Release Notes
+* Add the summarize operator for grouped and whole-table aggregation
+
 # QueryOperators.jl v1.0.0 Release Notes
 * Add the pivot_wider and pivot_longer operators
 
