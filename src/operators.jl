@@ -129,3 +129,12 @@ function pivot_longer end
 function pivot_wider end
 
 function summarize end
+
+# Outer joins, mirroring Enumerable.LeftJoin/RightJoin/FullJoin (.NET 11). The
+# unmatched side is supplied as an all-null element built by `_default_value`.
+
+function left_join end
+
+function right_join end
+
+function full_join end

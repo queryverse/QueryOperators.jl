@@ -13,6 +13,14 @@ function _default_value_expr(::Type{T}) where {T<:NamedTuple}
     return :( NamedTuple{$(fieldnames(T))}( ($( (_default_value_expr(fieldtype(T,i)) for i in 1:length(fieldnames(T)))...   ),)) )
 end
 
+# Runtime counterpart of `_default_value_expr`, used by the outer join operators
+# to build the all-null element that an unmatched side contributes. Generated so
+# that the NamedTuple case is constructed at compile time, exactly as
+# `default_if_empty` below does.
+@generated function _default_value(::Type{T}) where {T}
+    return _default_value_expr(T)
+end
+
 @generated function default_if_empty(source::S) where {S}
     T_source = eltype(source)
 

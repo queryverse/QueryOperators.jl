@@ -1,6 +1,7 @@
 using TestItemRunner
 
 include("test_core.jl")
+include("test_enumerable_outerjoins.jl")
 include("test_enumerable_unique.jl")
 include("test_enumerable_summarize.jl")
 include("test_namedtupleutilities.jl")
