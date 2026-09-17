@@ -138,3 +138,21 @@ function left_join end
 function right_join end
 
 function full_join end
+
+# Set operations. `union`, `except` and `intersect` shadow their Base
+# counterparts, as `map`, `filter`, `count`, `take`, `unique` and `join`
+# already do in this module.
+
+function concat end
+
+function union end
+
+function union_by end
+
+function except end
+
+function except_by end
+
+function intersect end
+
+function intersect_by end
