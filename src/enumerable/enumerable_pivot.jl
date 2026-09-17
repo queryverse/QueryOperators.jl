@@ -165,7 +165,8 @@ end
     include_ops = (:include_name, :include_position, :include_startswith,
                    :include_endswith, :include_occursin, :include_all,
                    :include_range, :include_range_idx)
-    has_positive = any(inst[1] ∈ include_ops for inst in instructions)
+    # Base.any, not the `any` query operator this module also defines.
+    has_positive = Base.any(inst[1] ∈ include_ops for inst in instructions)
 
     result = has_positive ? Symbol[] : copy(all_names)
 

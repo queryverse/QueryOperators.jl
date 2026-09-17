@@ -199,3 +199,29 @@ function append end
 function prepend end
 
 function zip end
+
+# Terminal operators, which return a value rather than another Enumerable.
+# `count` above is the pre-existing member of this family. Several of these
+# shadow Base functions of the same name.
+
+function min_by end
+
+function max_by end
+
+function any end
+
+function all end
+
+function contains end
+
+function sequence_equal end
+
+function aggregate end
+
+function first end
+
+function last end
+
+function single end
+
+function element_at end

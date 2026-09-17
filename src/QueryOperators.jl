@@ -46,6 +46,7 @@ include("enumerable/enumerable_summarize.jl")
 include("enumerable/enumerable_countby.jl")
 include("enumerable/enumerable_aggregateby.jl")
 include("enumerable/enumerable_chunk.jl")
+include("enumerable/enumerable_terminal.jl")
 include("enumerable/show.jl")
 
 include("source_iterable.jl")
