@@ -225,3 +225,9 @@ function last end
 function single end
 
 function element_at end
+
+# Type filtering.
+
+function of_type end
+
+function cast end
