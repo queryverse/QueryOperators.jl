@@ -156,3 +156,17 @@ function except_by end
 function intersect end
 
 function intersect_by end
+
+# Ordering and row position. `order`/`order_descending` are Enumerable.Order and
+# OrderDescending (.NET 7); `shuffle` is Enumerable.Shuffle (.NET 10); `index`
+# is Enumerable.Index (.NET 9).
+
+function order end
+
+function order_descending end
+
+function reverse end
+
+function shuffle end
+
+function index end

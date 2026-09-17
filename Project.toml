@@ -7,6 +7,7 @@ DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 TableShowUtils = "5e66a065-1f0a-5976-b372-e0b8c017ca10"
 DataValues = "e7dc6d0d-1eca-5fa6-8ad6-5aecde8b7ea5"
 IteratorInterfaceExtensions = "82899510-4779-5014-852e-03e436cf321d"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [extras]
 TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
@@ -18,6 +19,7 @@ DataStructures = "0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19"
 TableShowUtils = "0.1.1, 0.2, 0.3, 1"
 DataValues = "0.4.4, 0.5, 1"
 IteratorInterfaceExtensions = "0.1.1, 1"
+Random = "1"
 
 [targets]
 test = ["Test", "TestItemRunner"]

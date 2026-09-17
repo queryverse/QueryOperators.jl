@@ -4,6 +4,7 @@ using DataStructures
 using IteratorInterfaceExtensions
 using TableShowUtils
 import DataValues
+import Random
 
 export Grouping, key
 
@@ -30,6 +31,9 @@ include("enumerable/enumerable_concat.jl")
 include("enumerable/enumerable_union.jl")
 include("enumerable/enumerable_except.jl")
 include("enumerable/enumerable_intersect.jl")
+include("enumerable/enumerable_reverse.jl")
+include("enumerable/enumerable_shuffle.jl")
+include("enumerable/enumerable_index.jl")
 include("enumerable/enumerable_pivot.jl")
 include("enumerable/enumerable_summarize.jl")
 include("enumerable/show.jl")
