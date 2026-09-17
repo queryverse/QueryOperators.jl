@@ -191,3 +191,11 @@ function drop_while end
 function take_last end
 
 function drop_last end
+
+# Combining sequences. `append` and `zip` shadow their Base counterparts.
+
+function append end
+
+function prepend end
+
+function zip end
