@@ -170,3 +170,13 @@ function reverse end
 function shuffle end
 
 function index end
+
+# Keyed aggregation and batching. `count_by` and `aggregate_by` are
+# Enumerable.CountBy and AggregateBy (.NET 9); `chunk` is Enumerable.Chunk
+# (.NET 6).
+
+function count_by end
+
+function aggregate_by end
+
+function chunk end
