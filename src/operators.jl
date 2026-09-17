@@ -180,3 +180,14 @@ function count_by end
 function aggregate_by end
 
 function chunk end
+
+# Partitioning. `drop_while` and `drop_last` are Enumerable.SkipWhile and
+# SkipLast, named to match the existing `drop` rather than LINQ's `Skip`.
+
+function take_while end
+
+function drop_while end
+
+function take_last end
+
+function drop_last end
