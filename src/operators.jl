@@ -129,3 +129,105 @@ function pivot_longer end
 function pivot_wider end
 
 function summarize end
+
+# Outer joins, mirroring Enumerable.LeftJoin/RightJoin/FullJoin (.NET 11). The
+# unmatched side is supplied as an all-null element built by `_default_value`.
+
+function left_join end
+
+function right_join end
+
+function full_join end
+
+# Set operations. `union`, `except` and `intersect` shadow their Base
+# counterparts, as `map`, `filter`, `count`, `take`, `unique` and `join`
+# already do in this module.
+
+function concat end
+
+function union end
+
+function union_by end
+
+function except end
+
+function except_by end
+
+function intersect end
+
+function intersect_by end
+
+# Ordering and row position. `order`/`order_descending` are Enumerable.Order and
+# OrderDescending (.NET 7); `shuffle` is Enumerable.Shuffle (.NET 10); `index`
+# is Enumerable.Index (.NET 9).
+
+function order end
+
+function order_descending end
+
+function reverse end
+
+function shuffle end
+
+function index end
+
+# Keyed aggregation and batching. `count_by` and `aggregate_by` are
+# Enumerable.CountBy and AggregateBy (.NET 9); `chunk` is Enumerable.Chunk
+# (.NET 6).
+
+function count_by end
+
+function aggregate_by end
+
+function chunk end
+
+# Partitioning. `drop_while` and `drop_last` are Enumerable.SkipWhile and
+# SkipLast, named to match the existing `drop` rather than LINQ's `Skip`.
+
+function take_while end
+
+function drop_while end
+
+function take_last end
+
+function drop_last end
+
+# Combining sequences. `append` and `zip` shadow their Base counterparts.
+
+function append end
+
+function prepend end
+
+function zip end
+
+# Terminal operators, which return a value rather than another Enumerable.
+# `count` above is the pre-existing member of this family. Several of these
+# shadow Base functions of the same name.
+
+function min_by end
+
+function max_by end
+
+function any end
+
+function all end
+
+function contains end
+
+function sequence_equal end
+
+function aggregate end
+
+function first end
+
+function last end
+
+function single end
+
+function element_at end
+
+# Type filtering.
+
+function of_type end
+
+function cast end

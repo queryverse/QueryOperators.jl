@@ -28,6 +28,13 @@ function orderby_descending(source::Enumerable, f::Function, f_expr::Expr)
     return EnumerableOrderby{T,typeof(source),KS,TKS}(source, f, true)
 end
 
+# Enumerable.Order/OrderDescending (.NET 7): sort by the elements themselves.
+# Expressed in terms of orderby so that `thenby` can still follow them — it
+# walks back up the source chain looking for an EnumerableOrderby.
+order(source::Enumerable) = orderby(source, identity, :(i -> i))
+
+order_descending(source::Enumerable) = orderby_descending(source, identity, :(i -> i))
+
 function Base.iterate(iter::EnumerableOrderby{T,S,KS,TKS}) where {T,S,KS,TKS}
     rows = (Base.IteratorSize(typeof(iter)) isa Base.HasLength || Base.IteratorSize(typeof(iter)) isa Base.HasShape) ? length(iter) : 0
 
